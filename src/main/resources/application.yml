@@ -1,10 +1,11 @@
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/xiaok?uuseUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/sprout?uuseUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
     username: root
-    password: Kujio.151316
+    password: www.jiexian.biz
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 
   data:
     redis:
@@ -20,16 +21,17 @@ spring:
 
 
 mybatis:
-  type-aliases-package: me.kujio.xiaok.**.entity
+  type-aliases-package: me.kujio.sprout.**.entity
   config-location: classpath:mybatis-config.xml
   mapper-locations: classpath*:mapper/base/*Mapper.xml
 
 logging:
   level:
-    me.kujio.xiaok: debug
+    me.kujio.sprout: debug
 
 server:
   tomcat:
     accept-count: 100
     max-connections: 10000
     connection-timeout: 60s
+  port: 8080

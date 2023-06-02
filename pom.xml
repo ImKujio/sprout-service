@@ -9,11 +9,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>me.kujio</groupId>
-    <artifactId>xiaok</artifactId>
+    <artifactId>sprout</artifactId>
     <version>0.0.1</version>
 
-    <name>xiaok</name>
-    <description>xiaok</description>
+    <name>sprout</name>
+    <description>sprout</description>
 
     <properties>
         <java.version>17</java.version>

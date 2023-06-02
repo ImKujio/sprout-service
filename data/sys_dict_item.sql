@@ -11,7 +11,7 @@ create table sys_dict_item
 )
     comment '系统字典项';
 
-INSERT INTO xiaok.sys_dict_item (id, dict, label, style, remark) VALUES (1, 1, '系统', null, null);
-INSERT INTO xiaok.sys_dict_item (id, dict, label, style, remark) VALUES (2, 1, '用户', null, null);
-INSERT INTO xiaok.sys_dict_item (id, dict, label, style, remark) VALUES (3, 2, '菜单', null, null);
-INSERT INTO xiaok.sys_dict_item (id, dict, label, style, remark) VALUES (4, 2, '项目', null, null);
+INSERT INTO sprout.sys_dict_item (id, dict, label, style, remark) VALUES (1, 1, '系统', null, null);
+INSERT INTO sprout.sys_dict_item (id, dict, label, style, remark) VALUES (2, 1, '用户', null, null);
+INSERT INTO sprout.sys_dict_item (id, dict, label, style, remark) VALUES (3, 2, '菜单', null, null);
+INSERT INTO sprout.sys_dict_item (id, dict, label, style, remark) VALUES (4, 2, '项目', null, null);

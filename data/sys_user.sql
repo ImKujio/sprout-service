@@ -12,5 +12,5 @@ create table sys_user
 )
     comment '系统用户';
 
-INSERT INTO xiaok.sys_user (id, name, nick_name, password, create_time, owner) VALUES (1, 'admin', '管理员', '123456', '2023-05-14 03:25:39', 0);
-INSERT INTO xiaok.sys_user (id, name, nick_name, password, create_time, owner) VALUES (2, 'chairman', '董事长', '123456', '2023-05-14 03:44:39', 1);
+INSERT INTO sprout.sys_user (id, name, nick_name, password, create_time, owner) VALUES (1, 'admin', '管理员', '123456', '2023-05-14 03:25:39', 0);
+INSERT INTO sprout.sys_user (id, name, nick_name, password, create_time, owner) VALUES (2, 'chairman', '董事长', '123456', '2023-05-14 03:44:39', 1);

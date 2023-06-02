@@ -1,0 +1,54 @@
+package me.kujio.sprout.system.controller;
+
+import me.kujio.sprout.base.entity.Query;
+import me.kujio.sprout.core.entity.JRst;
+import me.kujio.sprout.system.entity.SysDict;
+import me.kujio.sprout.system.service.SysDictService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
+
+import static me.kujio.sprout.core.entity.JRst.OK;
+
+@RestController
+@RequestMapping("/sys/dict")
+public class SysDictController {
+
+    private final SysDictService sysDictService;
+
+    public SysDictController(SysDictService sysDictService) {
+        this.sysDictService = sysDictService;
+    }
+
+    @GetMapping("/list")
+    public JRst list(Query query) {
+        return OK(sysDictService.list(query));
+    }
+
+    @GetMapping("/total")
+    public JRst total() {
+        return OK(sysDictService.total());
+    }
+
+    @GetMapping(value = "/{id}")
+    public JRst get(@PathVariable Integer id) {
+        return OK(sysDictService.get(id));
+    }
+
+    @GetMapping("/all")
+    public JRst all(@RequestParam Set<String> fields) {
+        return OK(sysDictService.all(fields));
+    }
+
+    @PutMapping
+    public JRst put(@RequestBody SysDict sysDict) {
+        sysDictService.put(sysDict);
+        return OK();
+    }
+
+    @DeleteMapping("/{id}")
+    public JRst del(@PathVariable Integer id) {
+        sysDictService.del(id);
+        return OK();
+    }
+}

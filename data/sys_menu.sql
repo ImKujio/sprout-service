@@ -10,6 +10,6 @@ create table sys_menu
 )
     comment '后台菜单';
 
-INSERT INTO xiaok.sys_menu (id, pid, type, name, sort, path) VALUES (1, 0, 3, '系统管理', 1, null);
-INSERT INTO xiaok.sys_menu (id, pid, type, name, sort, path) VALUES (2, 1, 4, '菜单设置', 1, null);
-INSERT INTO xiaok.sys_menu (id, pid, type, name, sort, path) VALUES (3, 1, 4, '字典设置', 1, null);
+INSERT INTO sprout.sys_menu (id, pid, type, name, sort, path) VALUES (1, 0, 3, '系统管理', 1, null);
+INSERT INTO sprout.sys_menu (id, pid, type, name, sort, path) VALUES (2, 1, 4, '菜单设置', 1, null);
+INSERT INTO sprout.sys_menu (id, pid, type, name, sort, path) VALUES (3, 1, 4, '字典设置', 1, null);
