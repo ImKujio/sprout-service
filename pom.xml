@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>me.kujio</groupId>
-    <artifactId>sprout</artifactId>
+    <artifactId>sprout-service</artifactId>
     <version>0.0.1</version>
 
     <name>sprout</name>
