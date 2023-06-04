@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.kujio.sprout.base.entity.BaseEntity;
 import me.kujio.sprout.base.entity.EntityHandle;
+import me.kujio.sprout.dict.AdminMenuType;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -15,6 +16,10 @@ public class SysMenu extends BaseEntity {
     private String name;
     private Integer sort;
     private String path;
+    private String page;
+
+    public static class Type extends AdminMenuType{}
+
 
     @Component
     public static class Handle extends EntityHandle<SysMenu> {
@@ -26,6 +31,7 @@ public class SysMenu extends BaseEntity {
             put("name", accessor(SysMenu::getName, SysMenu::setName));
             put("sort", accessor(SysMenu::getSort, SysMenu::setSort));
             put("path", accessor(SysMenu::getPath, SysMenu::setPath));
+            put("page", accessor(SysMenu::getPage, SysMenu::setPage));
         }
     }
 
