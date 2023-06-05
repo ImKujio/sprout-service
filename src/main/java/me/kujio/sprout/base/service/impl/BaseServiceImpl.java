@@ -30,31 +30,31 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
     }
 
     @Override
-    public List<T> list(@NonNull Criteria criteria) {
-        return list(new Query(criteria, sorting(), new Page()));
+    public List<T> list(@NonNull Where where) {
+        return list(new Query(where, Order.of(), new Page()));
     }
 
     @Override
-    public List<T> list(@NonNull Criteria criteria, int limit) {
-        return list(new Query(criteria, sorting(), new Page(limit)));
+    public List<T> list(@NonNull Where where, int limit) {
+        return list(new Query(where, Order.of(), new Page(limit)));
     }
 
     @Override
-    public List<T> list(@NonNull Criteria criteria, Sorting sorting) {
-        return list(new Query(criteria, sorting, new Page()));
+    public List<T> list(@NonNull Where where, Order order) {
+        return list(new Query(where, order, new Page()));
     }
 
     @Override
-    public List<T> list(@NonNull Criteria criteria, Sorting sorting, int limit) {
-        return list(new Query(criteria, sorting, new Page(limit)));
+    public List<T> list(@NonNull Where where, Order order, int limit) {
+        return list(new Query(where, order, new Page(limit)));
     }
 
     @Override
     public List<T> list(@NonNull Query query) {
         return baseMapper.list(
                 entityHandle.getTable(),
-                query.getCriteria(entityHandle),
-                query.getSorting(entityHandle),
+                query.getWhere(entityHandle),
+                query.getOrder(entityHandle),
                 query.getPage()
         ).stream().map(entityHandle::map).collect(Collectors.toList());
     }
@@ -79,13 +79,13 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
 
     @Override
     public int total() {
-        return count(criteria());
+        return count(Where.of());
     }
 
     @Override
-    public int count(@NonNull Criteria criteria) {
-        String cacheKey = entityHandle.entityName() + ": count: criteria=" + criteria;
-        return cacheUtils.getOrPut(cacheKey, () -> baseMapper.count(entityHandle.getTable(), criteria));
+    public int count(@NonNull Where where) {
+        String cacheKey = entityHandle.entityName() + ": count: where=" + where;
+        return cacheUtils.getOrPut(cacheKey, () -> baseMapper.count(entityHandle.getTable(), where));
     }
 
     @Override
@@ -114,57 +114,16 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
 
     @Override
     public void del(Integer id) {
-        del(criteria(where("id", "=", id)));
+        del(Where.of(Where.item("id", "=", id)));
     }
 
     @Override
-    public void del(@NonNull Criteria criteria) {
-        if (criteria.size() == 0)
+    public void del(@NonNull Where where) {
+        if (where.size() == 0)
             throw new SysException("删除条件不能为空");
-        baseMapper.del(entityHandle.getTable(), criteria);
+        baseMapper.del(entityHandle.getTable(), where);
         cacheUtils.delPrefix(entityHandle.entityName());
-        log.info("del: {}", criteria);
-    }
-
-
-    /**
-     * 快速创建查询条件 <br>
-     * 示例：criteria(where("id", "=", 1), where("age", "between", 15,18))
-     * @param wheres 单个条件
-     * @return 查询条件
-     */
-    protected Criteria criteria(Where... wheres) {
-        return new Criteria() {{
-            for (Where where : wheres) {
-                if (where != null) add(where);
-            }
-        }};
-    }
-
-    protected Where where(String field, String type, Object... values) {
-        return Where.create(log, entityHandle, field, type, values);
-    }
-
-    /**
-     * 快速创建排序条件 <br>
-     * 示例：sorting(asc("id"), desc("age"))
-     * @param orders 单个排序
-     * @return 排序条件
-     */
-    protected Sorting sorting(Order... orders) {
-        return new Sorting() {{
-            for (Order order : orders) {
-                if (order != null) add(order);
-            }
-        }};
-    }
-
-    protected Order asc(String field) {
-        return Order.create(log, entityHandle, field, Order.ASC);
-    }
-
-    protected Order desc(String field) {
-        return Order.create(log, entityHandle, field, Order.DESC);
+        log.info("del: {}", where);
     }
 
 }

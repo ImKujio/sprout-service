@@ -11,21 +11,25 @@ import java.util.Map;
 @Component
 public interface BaseMapper {
 
-    List<Map<String,Object>> list(@Param("table") String table, @Param("wheres") List<Where> wheres, @Param("orders") List<Order> orders, @Param("page") Page page);
+    List<Map<String, Object>> list(
+            @Param("table") String table,
+            @Param("wheres") List<Where.Item> wheres,
+            @Param("orders") List<Order.Item> orders,
+            @Param("page") Page page);
 
-    Map<String,Object> get(@Param("table") String table, @Param("id") Integer id);
+    Map<String, Object> get(@Param("table") String table, @Param("id") Integer id);
 
     @MapKey("id")
     Map<Integer, Map<String, Object>> all(@Param("table") String table, @Param("fields") List<Field> fields);
 
     int exist(@Param("table") String table, @Param("id") Integer id);
 
-    int count(@Param("table") String table, @Param("wheres") List<Where> wheres);
+    int count(@Param("table") String table, @Param("wheres") List<Where.Item> wheres);
 
     void add(@Param("table") String table, @Param("fields") List<Field> fields, @Param("addRst") AddRst addRst);
 
     void set(@Param("table") String table, @Param("fields") List<Field> fields, @Param("id") Integer id);
 
-    void del(@Param("table") String table, @Param("wheres") List<Where> wheres);
+    void del(@Param("table") String table, @Param("wheres") List<Where.Item> wheres);
 
 }

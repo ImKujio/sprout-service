@@ -19,23 +19,27 @@ function paramsEncode(obj, prefix = null) {
 }
 
 const testStudentList = {
-    "where": [
-        "name|like|小",
-        "age|in|12|13|14",
-        "schoolDismissalTime|between|17:00|17:30"
-    ],
-    "order": [
-        "name|desc",
-        "age"
-    ],
-    "page": [20, 1]
+    "where": {
+        "name": {type: "like", value: "小"},
+        "state": {type: "=", value: false},
+        "age": {type: "in", value: "12┆13┆14"},
+        "time": {type: "between", value: "17:00┆17:30"}
+    },
+    "order": {
+        "name": "desc",
+        "age": "asc"
+    },
+    "page": {
+        "page": 1,
+        "size": 10
+    }
 }
 
 const sysUserAll = {
-    "fields": ["name","nickName"]
+    "fields": ["name", "nickName"]
 }
 
-const params = paramsEncode(sysUserAll)
+const params = paramsEncode(testStudentList)
 console.log("?" + params);
 
-
+``

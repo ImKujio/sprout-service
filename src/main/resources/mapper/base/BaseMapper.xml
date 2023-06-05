@@ -10,12 +10,11 @@
     <sql id="where">
         <if test="wheres != null and wheres.size() > 0">
             <where>
-                <foreach collection="wheres" item="where" separator=" AND ">
+                <foreach collection="wheres" item="where" separator="AND">
                     <choose>
                         <when test="where.type == 'IN'">
                             ${where.column} IN
-                            <foreach collection="where.values" item="value" open="(" close=")" separator=",">#{value}
-                            </foreach>
+                            <foreach collection="where.values" item="value" open="(" close=")" separator=",">#{value}</foreach>
                         </when>
                         <when test="where.type == 'BETWEEN'">
                             ${where.column} BETWEEN

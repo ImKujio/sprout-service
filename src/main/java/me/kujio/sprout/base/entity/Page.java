@@ -1,46 +1,32 @@
 package me.kujio.sprout.base.entity;
 
 public class Page {
-    private int size;
-    private int page;
-
     public static final int DEF_SIZE = 20;
     public static final int DEF_PAGE = 1;
 
+    int size;
+    int page;
+
     public Page() {
+        this.page = DEF_PAGE;
         this.size = DEF_SIZE;
+    }
+
+    public Page(int limit) {
+        this.size = limit <= 0 ? DEF_SIZE : limit;
         this.page = DEF_PAGE;
     }
 
-    public Page(int size) {
-        this.size = size;
+    public Page(Integer size, Integer page) {
+        this.size = size == null || size <= 0 ? DEF_SIZE : size;
+        this.page = page == null || page <= 0 ? DEF_PAGE : page;
     }
 
     public int getSize() {
-        return size > 0 ? size : DEF_SIZE;
+        return size;
     }
 
     public int getPage() {
-        return page > 0 ? page - 1 : DEF_PAGE;
-    }
-
-    public static Page create(Integer[] pager) {
-        Page page = new Page();
-        if (pager == null) return page;
-        if (pager.length > 0){
-            page.size = pager[0];
-        }
-        if (pager.length > 1){
-            page.page = pager[1];
-        }
-        return page;
-    }
-
-    @Override
-    public String toString() {
-        return '{' +
-                "size=" + size +
-                ", page=" + page +
-                '}';
+        return page - 1;
     }
 }

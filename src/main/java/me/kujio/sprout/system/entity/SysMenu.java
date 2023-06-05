@@ -20,7 +20,6 @@ public class SysMenu extends BaseEntity {
 
     public static class Type extends AdminMenuType{}
 
-
     @Component
     public static class Handle extends EntityHandle<SysMenu> {
         {

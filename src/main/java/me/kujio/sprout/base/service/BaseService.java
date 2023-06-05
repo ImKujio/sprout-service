@@ -12,7 +12,7 @@ public interface BaseService<T extends BaseEntity> {
      * @param criteria 条件
      * @return 数据集合
      */
-    List<T> list(@NonNull Criteria criteria);
+    List<T> list(@NonNull Where where);
 
     /**
      * 根据条件查询数据集合
@@ -20,7 +20,7 @@ public interface BaseService<T extends BaseEntity> {
      * @param limit 限制条数
      * @return 数据集合
      */
-    List<T> list(@NonNull Criteria criteria,int limit);
+    List<T> list(@NonNull Where where,int limit);
 
     /**
      * 根据条件查询数据集合
@@ -28,7 +28,7 @@ public interface BaseService<T extends BaseEntity> {
      * @param sorting 排序
      * @return 数据集合
      */
-    List<T> list(@NonNull Criteria criteria, Sorting sorting);
+    List<T> list(@NonNull Where where, Order order);
 
     /**
      * 根据条件查询数据集合
@@ -37,7 +37,7 @@ public interface BaseService<T extends BaseEntity> {
      * @param limit 限制条数
      * @return 数据集合
      */
-    List<T> list(@NonNull Criteria criteria, Sorting sorting, int limit);
+    List<T> list(@NonNull Where where, Order order, int limit);
 
     /**
      * 根据条件查询数据集合
@@ -78,7 +78,7 @@ public interface BaseService<T extends BaseEntity> {
      * @param criteria 条件
      * @return 数据量
      */
-    int count(@NonNull Criteria criteria);
+    int count(@NonNull Where where);
 
     /**
      * 添加一条数据
@@ -108,6 +108,6 @@ public interface BaseService<T extends BaseEntity> {
      * 根据条件删除数据
      * @param criteria 条件
      */
-    void del(@NonNull Criteria criteria);
+    void del(@NonNull Where where);
 
 }
