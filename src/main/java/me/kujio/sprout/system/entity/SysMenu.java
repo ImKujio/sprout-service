@@ -14,11 +14,13 @@ public class SysMenu extends BaseEntity {
     private Integer pid;
     private Integer type;
     private String name;
+    private String icon;
     private Integer sort;
     private String path;
-    private String page;
+    private String component;
 
-    public static class Type extends AdminMenuType{}
+    public static class Type extends AdminMenuType {
+    }
 
     @Component
     public static class Handle extends EntityHandle<SysMenu> {
@@ -28,9 +30,10 @@ public class SysMenu extends BaseEntity {
             put("pid", accessor(SysMenu::getPid, SysMenu::setPid));
             put("type", accessor(SysMenu::getType, SysMenu::setType));
             put("name", accessor(SysMenu::getName, SysMenu::setName));
+            put("icon", accessor(SysMenu::getIcon, SysMenu::setIcon));
             put("sort", accessor(SysMenu::getSort, SysMenu::setSort));
             put("path", accessor(SysMenu::getPath, SysMenu::setPath));
-            put("page", accessor(SysMenu::getPage, SysMenu::setPage));
+            put("component", accessor(SysMenu::getComponent, SysMenu::setComponent));
         }
     }
 
