@@ -18,20 +18,20 @@ function paramsEncode(obj, prefix = null) {
     return str.join("&");
 }
 
-const testStudentList = {
-    "where": {
-        "name": {type: "like", value: "小"},
-        "state": {type: "=", value: false},
-        "age": {type: "in", value: "12┆13┆14"},
-        "time": {type: "between", value: "17:00┆17:30"}
+const queryParams = {
+    where: {
+        name: {type: "like", value: "小"},
+        state: {type: "=", value: false},
+        age: {type: "in", value: "12┆13┆14"},
+        time: {type: "between", value: "17:00┆17:30"}
     },
-    "order": {
-        "name": "desc",
-        "age": "asc"
+    order: {
+        name: "desc",
+        age: "asc"
     },
-    "page": {
-        "page": 1,
-        "size": 10
+    page: {
+        page: 1,
+        size: 10
     }
 }
 
@@ -39,7 +39,7 @@ const sysUserAll = {
     "fields": ["name", "nickName"]
 }
 
-const params = paramsEncode(testStudentList)
+const params = paramsEncode(queryParams)
 console.log("?" + params);
 
 ``

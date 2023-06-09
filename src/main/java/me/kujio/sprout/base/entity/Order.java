@@ -20,6 +20,16 @@ public class Order extends ArrayList<Order.Item> {
         return order;
     }
 
+    public static Order.Item asc(String field){
+        if (field == null || field.isBlank()) return null;
+        return new Item(field, ASC);
+    }
+
+    public static Order.Item desc(String field){
+        if (field == null || field.isBlank()) return null;
+        return new Item(field, DESC);
+    }
+
     public static Order.Item item(String field, String type) {
         if (field == null || field.isBlank()) return null;
         if (type == null || type.isBlank()) return null;
