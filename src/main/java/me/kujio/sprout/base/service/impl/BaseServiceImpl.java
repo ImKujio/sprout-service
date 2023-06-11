@@ -21,7 +21,9 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
     protected final CacheUtils cacheUtils;
     protected final Logger log;
 
-    public BaseServiceImpl(ApplicationContext context,EntityHandle<T> entityHandle) {
+    protected Set<OnUpdateHook> onUpdateHooks = new HashSet<>();
+
+    public BaseServiceImpl(ApplicationContext context, EntityHandle<T> entityHandle) {
         this.context = context;
         this.entityHandle = entityHandle;
         this.baseMapper = context.getBean(BaseMapper.class);
@@ -93,8 +95,11 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
         AddRst addRst = new AddRst();
         baseMapper.add(entityHandle.getTable(), entityHandle.unmap(entity), addRst);
         entity.setId(addRst.getId());
-        cacheUtils.delPrefix(entityHandle.entityName());
         log.info("add: {}", entity);
+        cacheUtils.delPrefix(entityHandle.entityName());
+        for (OnUpdateHook onUpdateHook : onUpdateHooks) {
+            onUpdateHook.run();
+        }
     }
 
     @Override
@@ -102,8 +107,11 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
         if (entity.getId() == null || !exist(entity.getId()))
             throw new SysException("所修改的数据不存在");
         baseMapper.set(entityHandle.getTable(), entityHandle.unmap(entity), entity.getId());
-        cacheUtils.delPrefix(entityHandle.entityName());
         log.info("set: {}", entity);
+        cacheUtils.delPrefix(entityHandle.entityName());
+        for (OnUpdateHook onUpdateHook : onUpdateHooks) {
+            onUpdateHook.run();
+        }
     }
 
     @Override
@@ -122,8 +130,15 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
         if (where.size() == 0)
             throw new SysException("删除条件不能为空");
         baseMapper.del(entityHandle.getTable(), where);
-        cacheUtils.delPrefix(entityHandle.entityName());
         log.info("del: {}", where);
+        cacheUtils.delPrefix(entityHandle.entityName());
+        for (OnUpdateHook onUpdateHook : onUpdateHooks) {
+            onUpdateHook.run();
+        }
     }
 
+    @Override
+    public void onUpdate(OnUpdateHook onUpdateHook) {
+        onUpdateHooks.add(onUpdateHook);
+    }
 }

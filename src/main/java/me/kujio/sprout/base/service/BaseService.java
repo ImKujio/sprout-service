@@ -110,4 +110,16 @@ public interface BaseService<T extends BaseEntity> {
      */
     void del(@NonNull Where where);
 
+    void onUpdate(OnUpdateHook onUpdateHook);
+
+    interface OnUpdateHook {
+        void run();
+    }
+
+    default Object allValue(Map<Integer, Map<String, Object>> allMap, Integer id,String field){
+        Map<String, Object> map = allMap.get(id);
+        if (map == null) return null;
+        return map.get(field);
+    }
+
 }

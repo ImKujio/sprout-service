@@ -51,4 +51,9 @@ public class SysDictController {
         sysDictService.del(id);
         return OK();
     }
+
+    @GetMapping("/all-dict")
+    public JRst allDict(){
+        return OK(sysDictService.allDict());
+    }
 }
