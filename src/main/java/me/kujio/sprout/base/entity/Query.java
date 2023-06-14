@@ -83,6 +83,6 @@ public class Query {
         Integer size = StringUtils.toInteger(params.getOrDefault("page[size]", new String[]{null})[0]);
         Integer page = StringUtils.toInteger(params.getOrDefault("page[page]", new String[]{null})[0]);
 
-        return new Query(where, order, new Page(size, page));
+        return new Query(where, order, size == -1 ? null : new Page(size, page));
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 @EqualsAndHashCode(callSuper = true)
 public class SysDictItem extends BaseEntity {
     private Integer dict;
+    private String name;
     private String label;
     private String style;
     private String remark;
@@ -20,6 +21,7 @@ public class SysDictItem extends BaseEntity {
             getter(SysDictItem::new);
             put("id", accessor(SysDictItem::getId, SysDictItem::setId));
             put("dict", accessor(SysDictItem::getDict, SysDictItem::setDict));
+            put("name", accessor(SysDictItem::getName, SysDictItem::setName));
             put("label", accessor(SysDictItem::getLabel, SysDictItem::setLabel));
             put("style", accessor(SysDictItem::getStyle, SysDictItem::setStyle));
             put("remark", accessor(SysDictItem::getRemark, SysDictItem::setRemark));
