@@ -80,8 +80,8 @@ public class Query {
             order.add(Order.item(field, type));
         }
 
-        Integer size = StringUtils.toInteger(params.getOrDefault("size", new String[]{null})[0]);
-        Integer page = StringUtils.toInteger(params.getOrDefault("page", new String[]{null})[0]);
+        Integer size = StringUtils.toInteger(params.getOrDefault("page[size]", new String[]{null})[0]);
+        Integer page = StringUtils.toInteger(params.getOrDefault("page[page]", new String[]{null})[0]);
 
         return new Query(where, order, new Page(size, page));
     }
