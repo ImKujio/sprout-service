@@ -1,5 +1,7 @@
 package me.kujio.sprout.base.entity;
 
+import me.kujio.sprout.core.exception.SysException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,21 +16,20 @@ public class Where extends ArrayList<Where.Item> {
     }
 
     public static Where.Item item(String field, String type, Object... value) {
-        if (field == null || field.isBlank()) return null;
-        if (type == null || type.isBlank()) return null;
-        if (value == null || value.length == 0) return null;
+        if (field == null || field.isBlank()) throw new SysException("Where构造失败：field为空");
+        if (type == null || type.isBlank()) throw new SysException("Where构造失败：type为空");
+        if (value == null || value.length == 0) throw new SysException("Where构造失败：value为空");
         type = type.toUpperCase();
         switch (type) {
             case "=", ">", ">=", "<", "<=", "LIKE" -> {
                 return new Item(field, type, Arrays.copyOfRange(value, 0, 1));
             }
-            case "BETWEEN" -> {
-                if (value.length < 2) return null;
-                return new Item(field, type, Arrays.copyOfRange(value, 0, 2));
-            }
             case "IN" -> {
-                if (value.length < 2) return null;
                 return new Item(field, type, value);
+            }
+            case "BETWEEN" -> {
+                if (value.length < 2) throw new SysException("Where构造失败：between条件时，value数量小于2");
+                return new Item(field, type, Arrays.copyOfRange(value, 0, 2));
             }
             default -> {
                 return null;

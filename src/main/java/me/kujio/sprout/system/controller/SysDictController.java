@@ -1,8 +1,10 @@
 package me.kujio.sprout.system.controller;
 
 import me.kujio.sprout.base.entity.Query;
+import me.kujio.sprout.base.entity.WithItems;
 import me.kujio.sprout.core.entity.JRst;
 import me.kujio.sprout.system.entity.SysDict;
+import me.kujio.sprout.system.entity.SysDictItem;
 import me.kujio.sprout.system.service.SysDictService;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,6 +45,12 @@ public class SysDictController {
     @PutMapping
     public JRst put(@RequestBody SysDict sysDict) {
         sysDictService.put(sysDict);
+        return OK();
+    }
+
+    @PutMapping("/with-items")
+    public JRst putWithItems(@RequestBody WithItems<SysDict, SysDictItem> withItems) {
+        sysDictService.putWithItems(withItems);
         return OK();
     }
 

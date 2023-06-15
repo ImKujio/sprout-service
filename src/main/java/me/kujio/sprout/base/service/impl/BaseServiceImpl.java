@@ -127,8 +127,7 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
 
     @Override
     public void del(@NonNull Where where) {
-        if (where.size() == 0)
-            throw new SysException("删除条件不能为空");
+        if (where.size() == 0) throw new SysException("删除条件不能为空");
         baseMapper.del(entityHandle.getTable(), where);
         log.info("del: {}", where);
         cacheUtils.delPrefix(entityHandle.entityName());

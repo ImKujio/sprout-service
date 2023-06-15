@@ -13,3 +13,4 @@ create table sys_dict
 
 INSERT INTO sprout.sys_dict (id, name, label, remark, owner) VALUES (1, 'sys_owner', '所属类型', null, 1);
 INSERT INTO sprout.sys_dict (id, name, label, remark, owner) VALUES (2, 'admin_menu_type', '后台菜单类型', null, 1);
+INSERT INTO sprout.sys_dict (id, name, label, remark, owner) VALUES (5, 'test_dict', '测试字典', '字典备注', 2);

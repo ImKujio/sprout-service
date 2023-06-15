@@ -1,5 +1,7 @@
 package me.kujio.sprout.base.entity;
 
+import me.kujio.sprout.core.exception.SysException;
+
 import java.util.ArrayList;
 
 public class Order extends ArrayList<Order.Item> {
@@ -31,15 +33,15 @@ public class Order extends ArrayList<Order.Item> {
     }
 
     public static Order.Item item(String field, String type) {
-        if (field == null || field.isBlank()) return null;
-        if (type == null || type.isBlank()) return null;
+        if (field == null || field.isBlank()) throw new SysException("Order构造失败！field为空");
+        if (type == null || type.isBlank()) throw new SysException("Order构造失败！type为空");
         type = type.toUpperCase();
         switch (type) {
             case ASC, DESC -> {
                 return new Item(field, type);
             }
             default -> {
-                return null;
+                throw new SysException("Order构造失败！type只能为ASC或DESC，忽略大小写");
             }
         }
     }

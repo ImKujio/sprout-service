@@ -1,5 +1,6 @@
 package me.kujio.sprout.base.entity;
 
+import me.kujio.sprout.core.exception.SysException;
 import me.kujio.sprout.utils.StringUtils;
 
 import java.util.*;
@@ -10,21 +11,48 @@ public class Query {
     Order order;
     Page page;
 
-    public Query(Where where, Order order, Page page) {
+    private final boolean ignoreErr;
+
+    private Query(Where where, Order order, Page page,boolean ignoreErr){
         this.where = where;
         this.order = order;
         this.page = page;
+        this.ignoreErr = ignoreErr;
+    }
+
+    public Query(Where where, Order order, Page page) {
+        this(where,order,page,false);
     }
 
     public List<Where.Item> getWhere(EntityHandle<?> entityHandle) {
         return where.stream()
-                .filter(i -> i != null && entityHandle.containsKey(Field.snake2Camel(i.getColumn())))
+                .filter(i -> {
+                    if (i == null || !entityHandle.containsKey(Field.snake2Camel(i.getColumn()))){
+                        if (ignoreErr)
+                            return false;
+                        else if (i == null)
+                            throw new SysException("where条件为空");
+                        else
+                            throw new SysException(entityHandle.entityName() + "没有字段：" + Field.snake2Camel(i.getColumn()));
+                    }
+                    return true;
+                })
                 .collect(Collectors.toList());
     }
 
     public List<Order.Item> getOrder(EntityHandle<?> entityHandle) {
         return order.stream()
-                .filter(i -> i != null && entityHandle.containsKey(Field.snake2Camel(i.getColumn())))
+                .filter(i -> {
+                    if (i == null || !entityHandle.containsKey(Field.snake2Camel(i.getColumn()))){
+                        if (ignoreErr)
+                            return false;
+                        else if (i == null)
+                            throw new SysException("order条件为空");
+                        else
+                            throw new SysException(entityHandle.entityName() + "没有字段：" + Field.snake2Camel(i.getColumn()));
+                    }
+                    return true;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -70,19 +98,25 @@ public class Query {
                     objects[i] = values[i];
                 }
             }
-            where.add(Where.item(field, type, objects));
+            try {
+                where.add(Where.item(field, type, objects));
+            } catch (SysException ignored) {
+            }
         }
 
         Order order = Order.of();
         for (String field : orderFields) {
             String type = params.getOrDefault("order[" + field + "]", new String[]{"ASC"})[0];
             if (type == null) continue;
-            order.add(Order.item(field, type));
+            try {
+                order.add(Order.item(field, type));
+            } catch (SysException ignored) {
+            }
         }
 
         Integer size = StringUtils.toInteger(params.getOrDefault("page[size]", new String[]{null})[0]);
         Integer page = StringUtils.toInteger(params.getOrDefault("page[page]", new String[]{null})[0]);
 
-        return new Query(where, order, size == -1 ? null : new Page(size, page));
+        return new Query(where, order, size == -1 ? null : new Page(size, page),true);
     }
 }

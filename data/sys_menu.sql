@@ -13,5 +13,5 @@ create table sys_menu
     comment '后台菜单';
 
 INSERT INTO sprout.sys_menu (id, pid, type, name, icon, sort, path, component) VALUES (101, 0, 3, '系统管理', 'settings', 1, null, null);
-INSERT INTO sprout.sys_menu (id, pid, type, name, icon, sort, path, component) VALUES (102, 101, 4, '菜单设置', 'menu', 1, '/sys-menu', 'SysMenu');
+INSERT INTO sprout.sys_menu (id, pid, type, name, icon, sort, path, component) VALUES (102, 101, 4, '菜单设置', 'menu', 2, '/sys-menu', 'SysMenu');
 INSERT INTO sprout.sys_menu (id, pid, type, name, icon, sort, path, component) VALUES (103, 101, 4, '字典设置', 'dict', 1, '/sys-dict', 'SysDict');

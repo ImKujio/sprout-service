@@ -2,6 +2,7 @@ package me.kujio.sprout.system.service.impl;
 
 import me.kujio.sprout.base.entity.EntityHandle;
 import me.kujio.sprout.base.entity.Where;
+import me.kujio.sprout.base.entity.WithItems;
 import me.kujio.sprout.base.service.impl.BaseServiceImpl;
 import me.kujio.sprout.system.entity.SysDict;
 import me.kujio.sprout.system.entity.SysDictItem;
@@ -44,16 +45,32 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
             Map<String, Map<Integer, SysDictItem>> allDict = new HashMap<>();
             List<SysDictItem> dictItems = sysDictItemService.list(Where.of());
             for (SysDictItem dictItem : dictItems) {
-                String dictName = String.valueOf(allValue(dictNameMap,dictItem.getDict(),"name"));
+                String dictName = String.valueOf(allValue(dictNameMap, dictItem.getDict(), "name"));
                 if (dictName.equals("null")) continue;
                 Map<Integer, SysDictItem> dict = allDict.get(dictName);
-                if (dict == null){
+                if (dict == null) {
                     dict = new HashMap<>();
-                    allDict.put(dictName,dict);
+                    allDict.put(dictName, dict);
                 }
-                dict.put(dictItem.getId(),dictItem);
+                dict.put(dictItem.getId(), dictItem);
             }
             return allDict;
         });
+    }
+
+    @Override
+    public void putWithItems(WithItems<SysDict, SysDictItem> withItems) {
+        put(withItems.getData());
+        List<SysDictItem> dictItems = sysDictItemService.list(
+                Where.of(Where.item("dict", "=", withItems.dataId()))
+        );
+        withItems.compare(
+                dictItems,
+                entity -> {
+                    entity.setDict(withItems.dataId());
+                    sysDictItemService.put(entity);
+                },
+                delItem -> sysDictItemService.del(delItem.getId())
+        );
     }
 }
