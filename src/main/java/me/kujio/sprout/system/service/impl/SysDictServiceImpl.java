@@ -23,19 +23,13 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
 
     private final String cacheKeyAllDict;
 
-    public SysDictServiceImpl(
-            ApplicationContext context,
-            EntityHandle<SysDict> entityHandle,
-            SysDictItemService sysDictItemService
-    ) {
+    public SysDictServiceImpl(ApplicationContext context, EntityHandle<SysDict> entityHandle, SysDictItemService sysDictItemService) {
         super(context, entityHandle);
         this.sysDictItemService = sysDictItemService;
 
         // 当字典项更新时，删除allDict的缓存
         this.cacheKeyAllDict = entityHandle.entityName() + ": allDict";
-        sysDictItemService.onUpdate(() -> {
-            cacheUtils.del(cacheKeyAllDict);
-        });
+        sysDictItemService.onUpdate(() -> cacheUtils.del(cacheKeyAllDict));
     }
 
     @Override
@@ -47,11 +41,7 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
             for (SysDictItem dictItem : dictItems) {
                 String dictName = String.valueOf(allValue(dictNameMap, dictItem.getDict(), "name"));
                 if (dictName.equals("null")) continue;
-                Map<Integer, SysDictItem> dict = allDict.get(dictName);
-                if (dict == null) {
-                    dict = new HashMap<>();
-                    allDict.put(dictName, dict);
-                }
+                Map<Integer, SysDictItem> dict = allDict.computeIfAbsent(dictName, k -> new HashMap<>());
                 dict.put(dictItem.getId(), dictItem);
             }
             return allDict;
@@ -61,16 +51,10 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
     @Override
     public void putWithItems(WithItems<SysDict, SysDictItem> withItems) {
         put(withItems.getData());
-        List<SysDictItem> dictItems = sysDictItemService.list(
-                Where.of(Where.item("dict", "=", withItems.dataId()))
-        );
-        withItems.compare(
-                dictItems,
-                entity -> {
-                    entity.setDict(withItems.dataId());
-                    sysDictItemService.put(entity);
-                },
-                delItem -> sysDictItemService.del(delItem.getId())
-        );
+        List<SysDictItem> dictItems = sysDictItemService.list(Where.of(Where.item("dicts", "=", withItems.dataId())));
+        withItems.compare(dictItems, puItem -> {
+            puItem.setDict(withItems.dataId());
+            sysDictItemService.put(puItem);
+        }, delItem -> sysDictItemService.del(delItem.getId()));
     }
 }

@@ -24,6 +24,10 @@ public class Query {
         this(where,order,page,false);
     }
 
+    public static Query all(){
+        return new Query(Where.of(),Order.of(),null);
+    }
+
     public List<Where.Item> getWhere(EntityHandle<?> entityHandle) {
         return where.stream()
                 .filter(i -> {

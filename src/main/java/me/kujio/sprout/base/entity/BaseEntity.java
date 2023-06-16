@@ -3,6 +3,7 @@ package me.kujio.sprout.base.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 
 public class BaseEntity implements Serializable {
@@ -34,4 +35,13 @@ public class BaseEntity implements Serializable {
         return id == null ? 0 : id.hashCode();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseEntity that = (BaseEntity) o;
+
+        return Objects.equals(id, that.id);
+    }
 }

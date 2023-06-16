@@ -25,6 +25,11 @@ public class SysMenuController {
         return OK(sysMenuService.list(query));
     }
 
+    @GetMapping("/user-menus")
+    public JRst listUserMenus() {
+        return OK(sysMenuService.userMenus());
+    }
+
     @GetMapping("/total")
     public JRst total() {
         return OK(sysMenuService.total());

@@ -24,12 +24,7 @@ public class WithItems<T extends BaseEntity, I extends BaseEntity> {
      */
     public void compare(List<I> src, PutRunner<I> putRunner, DelRunner<I> delRunner) {
         Map<Integer, I> srcMap = new HashMap<>();
-        for (I item : items) {
-            // TODO: 2023/6/16 fix equals
-            System.out.println("new item:"+item.toString()+ "    hash:" +item.hashCode());
-        }
         for (I item : src) {
-            System.out.println("src item:"+item.toString()+ "    hash:" +item.hashCode());
             if (items.contains(item)) {
                 items.remove(item);
             } else {

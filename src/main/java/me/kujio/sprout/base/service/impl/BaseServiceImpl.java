@@ -104,8 +104,7 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
 
     @Override
     public void set(T entity) {
-        if (entity.getId() == null || !exist(entity.getId()))
-            throw new SysException("所修改的数据不存在");
+        if (entity.getId() == null) throw new SysException("所修改的数据id不能为空");
         baseMapper.set(entityHandle.getTable(), entityHandle.unmap(entity), entity.getId());
         log.info("set: {}", entity);
         cacheUtils.delPrefix(entityHandle.entityName());
