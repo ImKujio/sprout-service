@@ -5,6 +5,7 @@ import me.kujio.sprout.system.entity.SysUser;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface SysUserService extends BaseService<SysUser> {
+public interface SysUserService extends BaseService<SysUser>  {
+
 
 }

@@ -3,6 +3,8 @@ package me.kujio.sprout.core.entity;
 import com.alibaba.fastjson2.JSON;
 import lombok.Getter;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -52,5 +54,16 @@ public class JRst implements Serializable {
 
     public byte[] bytes() {
         return JSON.toJSONBytes(this);
+    }
+
+    public void writer(HttpServletResponse response){
+        response.setStatus(200);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        try {
+            response.getWriter().print(json());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

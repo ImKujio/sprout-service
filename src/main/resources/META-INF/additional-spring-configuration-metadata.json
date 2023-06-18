@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "server.token.header",
+      "type": "java.lang.String",
+      "description": "Description for server.token.header."
+  }
+] }

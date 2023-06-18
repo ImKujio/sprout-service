@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TestStudentServiceImpl extends BaseServiceImpl<TestStudent> implements TestStudentService {
-    public TestStudentServiceImpl(ApplicationContext context, EntityHandle<TestStudent> entityHandle) {
-        super(context, entityHandle);
+    public TestStudentServiceImpl(EntityHandle<TestStudent> entityHandle) {
+        super(entityHandle);
     }
 }

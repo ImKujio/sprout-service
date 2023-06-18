@@ -28,6 +28,7 @@ mybatis:
 logging:
   level:
     me.kujio.sprout: debug
+    org.springframework.security: debug
 
 server:
   tomcat:
@@ -35,3 +36,8 @@ server:
     max-connections: 10000
     connection-timeout: 60s
   port: 8080
+
+token:
+  header: Authorization
+  validity: 1
+  secret: jmazbshytwqlnogxirvdpucefkdczu

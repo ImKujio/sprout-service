@@ -3,6 +3,9 @@ package me.kujio.sprout.base.mapper;
 import me.kujio.sprout.base.entity.*;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,5 +34,6 @@ public interface BaseMapper {
     void set(@Param("table") String table, @Param("fields") List<Field> fields, @Param("id") Integer id);
 
     void del(@Param("table") String table, @Param("wheres") List<Where.Item> wheres);
+
 
 }

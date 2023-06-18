@@ -9,13 +9,14 @@ import java.util.Set;
 @Component
 public class CacheUtils {
 
-    private final RedisTemplate redisTemplate;
+    private static RedisTemplate redisTemplate;
 
     public CacheUtils(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
+        CacheUtils.redisTemplate = redisTemplate;
     }
 
-    public <T> T getOrPut(String key, Getter<T> getter) {
+
+    public static  <T> T getOrPut(String key, Getter<T> getter) {
         if (!hasKey(key)) {
             T obj = getter.get();
             put(key, obj);
@@ -24,26 +25,26 @@ public class CacheUtils {
         return get(key);
     }
 
-    public <T> T get(String key) {
+    public static  <T> T get(String key) {
         ValueOperations<String,T> operation = redisTemplate.opsForValue();
         return operation.get(key);
     }
 
-    public <T> void put(final String key, final T val) {
+    public static  <T> void put(final String key, final T val) {
         redisTemplate.opsForValue().set(key, val);
     }
 
-    public void del(String key) {
+    public static void del(String key) {
         redisTemplate.delete(key);
     }
 
-    public void delPrefix(String prefix) {
+    public static void delPrefix(String prefix) {
         Set<String> keys = redisTemplate.keys(prefix + ":*");
         if (keys == null) return;
         redisTemplate.delete(keys);
     }
 
-    public boolean hasKey(String key) {
+    public static boolean hasKey(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
     }
 

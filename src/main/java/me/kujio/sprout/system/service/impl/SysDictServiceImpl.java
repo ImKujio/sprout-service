@@ -8,6 +8,7 @@ import me.kujio.sprout.system.entity.SysDict;
 import me.kujio.sprout.system.entity.SysDictItem;
 import me.kujio.sprout.system.service.SysDictItemService;
 import me.kujio.sprout.system.service.SysDictService;
+import me.kujio.sprout.utils.CacheUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -23,18 +24,18 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
 
     private final String cacheKeyAllDict;
 
-    public SysDictServiceImpl(ApplicationContext context, EntityHandle<SysDict> entityHandle, SysDictItemService sysDictItemService) {
-        super(context, entityHandle);
+    public SysDictServiceImpl(EntityHandle<SysDict> entityHandle, SysDictItemService sysDictItemService) {
+        super(entityHandle);
         this.sysDictItemService = sysDictItemService;
 
         // 当字典项更新时，删除allDict的缓存
         this.cacheKeyAllDict = entityHandle.entityName() + ": allDict";
-        sysDictItemService.onUpdate(() -> cacheUtils.del(cacheKeyAllDict));
+        sysDictItemService.onUpdate(() -> CacheUtils.del(cacheKeyAllDict));
     }
 
     @Override
     public Map<String, Map<Integer, SysDictItem>> allDict() {
-        return cacheUtils.getOrPut(cacheKeyAllDict, () -> {
+        return CacheUtils.getOrPut(cacheKeyAllDict, () -> {
             Map<Integer, Map<String, Object>> dictNameMap = all(Set.of("name"));
             Map<String, Map<Integer, SysDictItem>> allDict = new HashMap<>();
             List<SysDictItem> dictItems = sysDictItemService.list(Where.of());
