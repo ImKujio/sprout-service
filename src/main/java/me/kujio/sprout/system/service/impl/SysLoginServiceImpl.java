@@ -56,7 +56,8 @@ public class SysLoginServiceImpl implements SysLoginService {
         return JWT.create()
                 .setExpiresAt(TimeUtils.ldt2Date(expires))
                 .setPayload("name", user.getUsername())
-                .sign(JWTSignerUtil.hs256(TokenConfig.getSecret().getBytes()));
+                .setKey(TokenConfig.getSecret().getBytes())
+                .sign();
     }
 
     @Override
@@ -69,13 +70,15 @@ public class SysLoginServiceImpl implements SysLoginService {
         }catch (JWTException ignored){
             return null;
         }
-        if (!jwt.verify(JWTSignerUtil.hs256(TokenConfig.getSecret().getBytes()))) return null;
+        jwt.setKey(TokenConfig.getSecret().getBytes());
+        if (!jwt.verify()) return null;
         Object nameObj = jwt.getPayload("name");
         if (nameObj == null) return null;
         String name = String.valueOf(nameObj);
         UserDetails user = userDetailsService.loadUserByUsername(name);
         if (user == null) return null;
         AuthInfo authInfo = (AuthInfo) user;
+        authInfo.setCredentialsNonExpired(jwt.validate(0L));
         response.setHeader(TokenConfig.getHeader(), newToken(authInfo));
         return authInfo;
     }

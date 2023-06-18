@@ -24,6 +24,7 @@ public class SysDictController {
         this.sysDictService = sysDictService;
         authorityService.register(new AuthorityService.Register(){{
             setDef("系统字典:查找列表");
+            setDef("系统字典:查找字典");
         }});
     }
 
@@ -39,6 +40,7 @@ public class SysDictController {
     }
 
     @GetMapping(value = "/{id}")
+    @PreAuthorize("@authorityService.permit('系统字典:查找字典')")
     public JRst get(@PathVariable Integer id) {
         return OK(sysDictService.get(id));
     }

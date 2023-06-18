@@ -28,6 +28,8 @@ public class SysUser extends BaseEntity implements AuthInfo {
     private Set<Authority> authorities;
     @JSONField(serialize = false)
     private Map<String,String[]> parameterMap;
+    @JSONField(serialize = false)
+    private boolean credentialsNonExpired;
 
 
     @Override
@@ -49,19 +51,19 @@ public class SysUser extends BaseEntity implements AuthInfo {
     @Override
     @JSONField(serialize = false)
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     @JSONField(serialize = false)
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     @JSONField(serialize = false)
     public boolean isCredentialsNonExpired() {
-        return false;
+        return credentialsNonExpired;
     }
 
     @Override
