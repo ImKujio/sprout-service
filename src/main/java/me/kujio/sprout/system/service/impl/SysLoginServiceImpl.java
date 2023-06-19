@@ -71,14 +71,13 @@ public class SysLoginServiceImpl implements SysLoginService {
             return null;
         }
         jwt.setKey(TokenConfig.getSecret().getBytes());
-        if (!jwt.verify()) return null;
+        if (!jwt.validate(0L)) return null;
         Object nameObj = jwt.getPayload("name");
         if (nameObj == null) return null;
         String name = String.valueOf(nameObj);
         UserDetails user = userDetailsService.loadUserByUsername(name);
         if (user == null) return null;
         AuthInfo authInfo = (AuthInfo) user;
-        authInfo.setCredentialsNonExpired(jwt.validate(0L));
         response.setHeader(TokenConfig.getHeader(), newToken(authInfo));
         return authInfo;
     }

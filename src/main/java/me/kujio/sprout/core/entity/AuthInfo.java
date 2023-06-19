@@ -11,6 +11,4 @@ public interface AuthInfo extends UserDetails {
     Map<String,String[]> getParameterMap();
 
     void setParameterMap(Map<String,String[]> parameterMap);
-
-    void setCredentialsNonExpired(boolean isExpired);
 }
