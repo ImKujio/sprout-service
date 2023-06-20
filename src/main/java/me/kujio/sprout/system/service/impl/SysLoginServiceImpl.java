@@ -34,8 +34,8 @@ public class SysLoginServiceImpl implements SysLoginService {
         loginInfo.valid();
         UserDetails user = userDetailsService.loadUserByUsername(loginInfo.getName());
         String md5 = SecureUtil.md5(loginInfo.getPassword());
-        if (user == null || !user.getPassword().equals(md5)){
-            throw new SysException("用户名或密码错误");
+        if (user == null || !user.getPassword().equals(md5)) {
+            throw new AuthException("用户名或密码错误");
         }
         AuthInfo authInfo = (AuthInfo) user;
         response.setHeader(TokenConfig.getHeader(), newToken(authInfo));
@@ -47,13 +47,13 @@ public class SysLoginServiceImpl implements SysLoginService {
         String key = String.valueOf(System.nanoTime());
         CircleCaptcha captcha = CaptchaUtil.createCircleCaptcha(200, 100, 4, 20);
         CacheUtils.put("captcha: " + key, captcha.getCode());
-        return new LoginInfo.Captcha(key,captcha.getCode());
+        return new LoginInfo.Captcha(key, captcha.getImageBase64Data());
     }
 
     @Override
     public String newToken(AuthInfo user) {
         LocalDateTime expires = LocalDateTime.now().plusMinutes(TokenConfig.getValidity());
-        return JWT.create()
+        return "Bearer " + JWT.create()
                 .setExpiresAt(TimeUtils.ldt2Date(expires))
                 .setPayload("name", user.getUsername())
                 .setKey(TokenConfig.getSecret().getBytes())
@@ -63,11 +63,11 @@ public class SysLoginServiceImpl implements SysLoginService {
     @Override
     public AuthInfo parseToken(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader(TokenConfig.getHeader());
-        if (token == null || token.isBlank()) return null;
+        if (token == null || token.isBlank() || !token.startsWith("Bearer")) return null;
         JWT jwt;
-        try{
-             jwt = JWTUtil.parseToken(token);
-        }catch (JWTException ignored){
+        try {
+            jwt = JWTUtil.parseToken(token.substring(7).trim());
+        } catch (JWTException ignored) {
             return null;
         }
         jwt.setKey(TokenConfig.getSecret().getBytes());

@@ -84,9 +84,9 @@ public class ExceptionResolver implements AuthenticationEntryPoint {
         log.error("请求:{},认证异常:{}", request.getRequestURI(), authException.getMessage());
         JRst errorResponse;
         if (authException instanceof AuthException) {
-            errorResponse = JRst.ERR(ACCESS_DENIED, authException.getMessage());
+            errorResponse = JRst.ERR(UN_AUTHORIZATION, authException.getMessage());
         } else {
-            errorResponse = JRst.ERR(ACCESS_DENIED, "未登录");
+            errorResponse = JRst.ERR(UN_AUTHORIZATION, "未登录");
         }
         errorResponse.writer(response);
     }

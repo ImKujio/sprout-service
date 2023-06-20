@@ -39,5 +39,5 @@ server:
 
 token:
   header: Authorization
-  validity: 1
+  validity: 10
   secret: jmazbshytwqlnogxirvdpucefkdczu
