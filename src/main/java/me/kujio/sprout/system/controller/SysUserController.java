@@ -1,6 +1,7 @@
 package me.kujio.sprout.system.controller;
 
 import me.kujio.sprout.base.entity.Query;
+import me.kujio.sprout.core.entity.AuthInfo;
 import me.kujio.sprout.core.entity.JRst;
 import me.kujio.sprout.system.entity.SysUser;
 import me.kujio.sprout.system.service.SysUserService;
@@ -50,5 +51,10 @@ public class SysUserController {
     public JRst del(@PathVariable Integer id) {
         sysUserService.del(id);
         return OK();
+    }
+
+    @GetMapping("/login")
+    public JRst loginUser(){
+        return OK(SysUser.getSecure((SysUser) AuthInfo.loginUser()));
     }
 }

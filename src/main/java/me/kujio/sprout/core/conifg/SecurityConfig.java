@@ -42,11 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers(anonymousUrls()).permitAll();
 
+        http.authorizeRequests().antMatchers("/upload/**","download/**","/resource/**").permitAll();
+
         http.authorizeRequests().anyRequest().authenticated();
 
         http.exceptionHandling().authenticationEntryPoint(exceptionResolver);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Override

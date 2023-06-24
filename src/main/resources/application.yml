@@ -41,3 +41,8 @@ token:
   header: Authorization
   validity: 10
   secret: jmazbshytwqlnogxirvdpucefkdczu
+
+files:
+  upload: D:\SRC\Web\sprout-service\files\upload
+  download: D:\SRC\Web\sprout-service\files\download
+  resource: D:\SRC\Web\sprout-service\files\resource

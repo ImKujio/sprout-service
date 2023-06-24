@@ -52,7 +52,7 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
     @Override
     public void putWithItems(WithItems<SysDict, SysDictItem> withItems) {
         put(withItems.getData());
-        List<SysDictItem> dictItems = sysDictItemService.list(Where.of(Where.item("dicts", "=", withItems.dataId())));
+        List<SysDictItem> dictItems = sysDictItemService.list(Where.of(Where.item("dict", "=", withItems.dataId())));
         withItems.compare(dictItems, puItem -> {
             puItem.setDict(withItems.dataId());
             sysDictItemService.put(puItem);

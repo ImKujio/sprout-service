@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class CacheUtils {
@@ -32,6 +33,10 @@ public class CacheUtils {
 
     public static  <T> void put(final String key, final T val) {
         redisTemplate.opsForValue().set(key, val);
+    }
+
+    public static <T> void put(final String key, final T val,long validity){
+        redisTemplate.opsForValue().set(key,val,validity, TimeUnit.MINUTES);
     }
 
     public static void del(String key) {

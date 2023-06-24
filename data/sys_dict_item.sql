@@ -17,3 +17,4 @@ INSERT INTO sprout.sys_dict_item (id, dict, name, label, style, remark) VALUES (
 INSERT INTO sprout.sys_dict_item (id, dict, name, label, style, remark) VALUES (3, 2, 'menu', '菜单', null, null);
 INSERT INTO sprout.sys_dict_item (id, dict, name, label, style, remark) VALUES (4, 2, 'page', '页面', null, null);
 INSERT INTO sprout.sys_dict_item (id, dict, name, label, style, remark) VALUES (6, 5, 'item1', '字典项1', 'class1', '备注1，修改');
+INSERT INTO sprout.sys_dict_item (id, dict, name, label, style, remark) VALUES (7, 5, 'item2', '字典项2', 'class2', '备注2');

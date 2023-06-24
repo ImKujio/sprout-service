@@ -1,7 +1,9 @@
 package me.kujio.sprout.core.entity;
 
-import com.alibaba.fastjson2.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
+import me.kujio.sprout.core.exception.SysException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 @Getter
 public class JRst implements Serializable {
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -49,11 +52,19 @@ public class JRst implements Serializable {
     }
 
     public String json() {
-        return JSON.toJSONString(this);
+        try {
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new SysException(e.getMessage());
+        }
     }
 
     public byte[] bytes() {
-        return JSON.toJSONBytes(this);
+        try {
+            return objectMapper.writeValueAsBytes(this);
+        } catch (JsonProcessingException e) {
+            throw new SysException(e.getMessage());
+        }
     }
 
     public void writer(HttpServletResponse response){

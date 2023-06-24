@@ -9,11 +9,15 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public interface SysLoginService {
-    boolean login(LoginInfo loginInfo, HttpServletResponse response);
+    void login(LoginInfo loginInfo, HttpServletResponse response);
+
+    void logout(HttpServletResponse response);
 
     LoginInfo.Captcha captcha();
 
     String newToken(AuthInfo user);
 
     AuthInfo parseToken(HttpServletRequest request, HttpServletResponse response);
+
+    void refreshToken(AuthInfo user,HttpServletResponse response);
 }

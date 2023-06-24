@@ -17,7 +17,7 @@ public class AuthorityService {
     }
 
     public boolean permit(String authority) {
-        AuthInfo authInfo = (AuthInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthInfo authInfo = AuthInfo.loginUser();
         if (authInfo.hasAuthority("admin")) return true;
         Checker checker = checkerMap.get(authority);
         if (checker == null) throw new SysException("权限配置错误，未注册权限:"+authority);
