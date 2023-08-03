@@ -19,7 +19,7 @@ public class SysMenuServiceImpl extends BaseServiceImpl<SysMenu> implements SysM
 
     @Override
     public List<SysMenu> userMenus() {
-        String cacheKey = entityHandle.entityName() + " : userMenus";
+        String cacheKey = entityHandle.entityName() + ": userMenus";
         return CacheUtils.getOrPut(cacheKey, () -> list(Query.all()));
     }
 }
