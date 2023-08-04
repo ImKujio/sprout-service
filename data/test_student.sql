@@ -13,4 +13,4 @@ create table test_student
     comment '测试学生';
 
 INSERT INTO sprout.test_student (id, name, age, stay, score, birthday, school_dismissal_time, registration_time) VALUES (1, '小明', 14, 1, 72.2340, '2023-05-01', '17:40:00', '2022-09-01 03:23:49');
-INSERT INTO sprout.test_student (id, name, age, stay, score, birthday, school_dismissal_time, registration_time) VALUES (4, '小红', 12, 0, 66.0000, '2009-09-11', '17:30:00', '2022-09-01 02:31:00');
+INSERT INTO sprout.test_student (id, name, age, stay, score, birthday, school_dismissal_time, registration_time) VALUES (4, '小红', 12, 0, 66.7500, '2009-09-08', '20:30:00', '2022-09-14 03:36:00');

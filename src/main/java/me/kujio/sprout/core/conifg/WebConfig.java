@@ -53,6 +53,7 @@ public class WebConfig implements WebMvcConfigurer {
             LocalTime localTime = (LocalTime) object;
             jsonWriter.writeString(localTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         });
+        converter.setFastJsonConfig(config);
         converters.add(0,converter);
     }
 
