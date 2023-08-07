@@ -11,9 +11,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * 测试学生
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TestStudent extends BaseEntity {
+
     private String name;
     private Integer age;
     private Boolean stay;

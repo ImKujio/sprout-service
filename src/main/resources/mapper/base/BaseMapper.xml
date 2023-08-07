@@ -13,18 +13,18 @@
                 <foreach collection="wheres" item="where" separator="AND">
                     <choose>
                         <when test="where.type == 'IN'">
-                            ${where.column} IN
+                            `${where.column}` IN
                             <foreach collection="where.values" item="value" open="(" close=")" separator=",">#{value}</foreach>
                         </when>
                         <when test="where.type == 'BETWEEN'">
-                            ${where.column} BETWEEN
+                            `${where.column}` BETWEEN
                             <foreach collection="where.values" item="value" separator="AND">#{value}</foreach>
                         </when>
                         <when test="where.type == 'LIKE'">
-                            ${where.column} LIKE CONCAT('%',#{where.value},'%')
+                            `${where.column}` LIKE CONCAT('%',#{where.value},'%')
                         </when>
                         <otherwise>
-                            ${where.column} ${where.type} #{where.value}
+                            `${where.column}` ${where.type} #{where.value}
                         </otherwise>
                     </choose>
                 </foreach>
@@ -38,7 +38,7 @@
         <if test="orders != null and orders.size() > 0">
             ORDER BY
             <foreach collection="orders" item="order" separator=",">
-                ${order.column} ${order.type}
+                `${order.column}` ${order.type}
             </foreach>
         </if>
         <if test="page != null">
@@ -55,7 +55,7 @@
         <trim prefix="SELECT" suffixOverrides=",">
             id AS id,
             <foreach item="field" collection="fields" separator=",">
-                ${field.column} AS ${field.name}
+                `${field.column}` AS ${field.name}
             </foreach>
         </trim>
         FROM ${table}
@@ -76,12 +76,12 @@
         insert into ${table}
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <foreach collection="fields" item="field" separator=",">
-                <if test="field.column != 'id' and (field.value != null || field.nullable == true)">${field.column}</if>
+                <if test="field.value != null || field.nullable == true">`${field.column}`</if>
             </foreach>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <foreach collection="fields" item="field" separator=",">
-                <if test="field.column != 'id' and (field.value != null || field.nullable == true)">
+                <if test="field.value != null || field.nullable == true">
                     <choose>
                         <when test="field.nullable == true">NULL</when>
                         <otherwise>#{field.value}</otherwise>
@@ -98,7 +98,7 @@
                 <if test="field.column != 'id' and (field.value != null || field.nullable == true)">
                     <choose>
                         <when test="field.nullable == true">${field.column} = NULL</when>
-                        <otherwise>${field.column} = #{field.value}</otherwise>
+                        <otherwise>`${field.column}` = #{field.value}</otherwise>
                     </choose>
                 </if>
             </foreach>
