@@ -20,6 +20,7 @@ public class TestStudent extends BaseEntity {
 
     private String name;
     private Integer age;
+    private Integer sex;
     private Boolean stay;
     private BigDecimal score;
     private LocalDate birthday;
@@ -32,6 +33,7 @@ public class TestStudent extends BaseEntity {
             getter(TestStudent::new);
             put("id", accessor(TestStudent::getId, TestStudent::setId));
             put("name", accessor(TestStudent::getName, TestStudent::setName));
+            put("sex", accessor(TestStudent::getSex, TestStudent::setSex));
             put("age", accessor(TestStudent::getAge, TestStudent::setAge));
             put("stay", accessor(TestStudent::getStay, TestStudent::setStay));
             put("score", accessor(TestStudent::getScore, TestStudent::setScore));
