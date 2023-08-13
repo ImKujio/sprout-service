@@ -60,13 +60,13 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/upload/**")
-                .addResourceLocations("file:"+FilesConfig.getUpload()+"/");
+                .addResourceLocations("file:"+FilesConfig.getUploadFull());
 
         registry.addResourceHandler("download/**")
-                .addResourceLocations("file:"+FilesConfig.getDownload() + "/");
+                .addResourceLocations("file:"+FilesConfig.getDownloadFull());
 
         registry.addResourceHandler("/resource/**")
-                .addResourceLocations("file:"+FilesConfig.getResource() + "/");
+                .addResourceLocations("file:"+FilesConfig.getResourceFull());
     }
 }
 

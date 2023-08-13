@@ -1,5 +1,6 @@
 package me.kujio.sprout.core.entity;
 
+import me.kujio.sprout.core.exception.SysException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,6 +22,6 @@ public interface AuthInfo extends UserDetails {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof AuthInfo)
             return (AuthInfo) principal;
-        else return null;
+        throw new SysException("认证失败");
     }
 }

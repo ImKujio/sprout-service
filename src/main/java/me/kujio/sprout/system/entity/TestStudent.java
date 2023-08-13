@@ -19,6 +19,7 @@ import java.time.LocalTime;
 public class TestStudent extends BaseEntity {
 
     private String name;
+    private String avatar;
     private Integer age;
     private Integer sex;
     private Boolean stay;
@@ -33,6 +34,7 @@ public class TestStudent extends BaseEntity {
             getter(TestStudent::new);
             put("id", accessor(TestStudent::getId, TestStudent::setId));
             put("name", accessor(TestStudent::getName, TestStudent::setName));
+            put("avatar", accessor(TestStudent::getAvatar, TestStudent::setAvatar));
             put("sex", accessor(TestStudent::getSex, TestStudent::setSex));
             put("age", accessor(TestStudent::getAge, TestStudent::setAge));
             put("stay", accessor(TestStudent::getStay, TestStudent::setStay));
