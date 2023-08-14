@@ -5,9 +5,9 @@ import me.kujio.sprout.core.entity.AuthInfo;
 import me.kujio.sprout.core.entity.JRst;
 import me.kujio.sprout.core.entity.LoginInfo;
 import me.kujio.sprout.core.service.SysLoginService;
+import me.kujio.sprout.system.entity.SysUser;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 
 import static me.kujio.sprout.core.entity.JRst.OK;
 
@@ -21,14 +21,28 @@ public class SysLoginController {
 
     @Anonymous
     @PostMapping("/login")
-    public JRst login(@RequestBody LoginInfo loginInfo, HttpServletResponse response){
-        sysLoginService.login(loginInfo,response);
-        return OK();
+    public JRst login(@RequestBody LoginInfo loginInfo) {
+        return OK(sysLoginService.login(loginInfo));
     }
 
     @PostMapping("/user-logout")
-    public JRst logout(HttpServletResponse response){
-        sysLoginService.logout(response);
+    public JRst logout() {
+        sysLoginService.logout();
+        return OK();
+    }
+
+    public record Password(String old, String fresh) {
+    }
+
+    @PostMapping("/change-password")
+    public JRst changePassword(@RequestBody Password password) {
+        sysLoginService.changePassword(password.old, password.fresh);
+        return OK();
+    }
+
+    @PostMapping("/reset-password")
+    public JRst resetPassword(@RequestBody String userName) {
+        sysLoginService.resetPassword(userName);
         return OK();
     }
 
@@ -40,8 +54,17 @@ public class SysLoginController {
 
     @Anonymous
     @GetMapping("/is-login")
-    public JRst isLogin(){
-        AuthInfo authInfo = AuthInfo.loginUser();
-        return OK(authInfo != null);
+    public JRst isLogin() {
+        try {
+            AuthInfo.loginUser();
+            return OK(true);
+        }catch (Exception e){
+            return OK(false);
+        }
+    }
+
+    @GetMapping("/login-info")
+    public JRst loginUser(){
+        return OK(SysUser.secureGet((SysUser) AuthInfo.loginUser()));
     }
 }

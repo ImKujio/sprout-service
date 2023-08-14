@@ -11,7 +11,7 @@ import java.util.Set;
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
-@RequestMapping("/sys/menu")
+@RequestMapping("/sys-menu")
 public class SysMenuController {
 
     private final SysMenuService sysMenuService;
@@ -30,9 +30,9 @@ public class SysMenuController {
         return OK(sysMenuService.userMenus());
     }
 
-    @GetMapping("/total")
-    public JRst total() {
-        return OK(sysMenuService.total());
+    @GetMapping("/count")
+    public JRst count(Query query) {
+        return OK(sysMenuService.count(query));
     }
 
     @GetMapping(value = "/{id}")

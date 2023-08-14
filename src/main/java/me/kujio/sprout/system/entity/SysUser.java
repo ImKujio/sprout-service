@@ -1,7 +1,6 @@
 package me.kujio.sprout.system.entity;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.kujio.sprout.base.entity.BaseEntity;
@@ -35,6 +34,8 @@ public class SysUser extends BaseEntity implements AuthInfo {
     @JSONField(serialize = false)
     private String uuid;
 
+    public static class Owner extends SysOwner {
+    }
 
     @Override
     public Set<Authority> getAuthorities() {
@@ -93,19 +94,31 @@ public class SysUser extends BaseEntity implements AuthInfo {
     }
 
 
-    public static SysUser getSecure(SysUser user) {
+    public static SysUser secureGet(SysUser user) {
         SysUser sysUser = new SysUser();
         sysUser.setId(user.getId());
         sysUser.setName(user.getName());
         sysUser.setNickName(user.getNickName());
         sysUser.setAvatar(user.getAvatar());
+        sysUser.setPermissions(user.getPermissions());
         sysUser.setCreateTime(user.getCreateTime());
         sysUser.setOwner(user.getOwner());
         return sysUser;
     }
 
-    public static class Owner extends SysOwner {
+    public static SysUser securePut(SysUser user) {
+        if (user == null) return null;
+        SysUser sysUser = new SysUser();
+        sysUser.setId(user.getId());
+        sysUser.setName(user.getName());
+        sysUser.setNickName(user.getNickName());
+        sysUser.setAvatar(user.getAvatar());
+        return sysUser;
     }
+
+    public static Set<String> secureFields = Set.of(
+            "id", "name", "nickName", "avatar", "createTime", "owner", "permissions"
+    );
 
     @Component
     public static class Handle extends EntityHandle<SysUser> {

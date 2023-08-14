@@ -34,9 +34,9 @@ public class SysDictController {
         return OK(sysDictService.list(query));
     }
 
-    @GetMapping("/total")
-    public JRst total() {
-        return OK(sysDictService.total());
+    @GetMapping("/count")
+    public JRst count(Query query) {
+        return OK(sysDictService.count(query));
     }
 
     @GetMapping(value = "/{id}")

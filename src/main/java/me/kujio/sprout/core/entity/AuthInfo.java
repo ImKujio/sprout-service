@@ -18,6 +18,8 @@ public interface AuthInfo extends UserDetails {
 
     void setUuid(String uuid);
 
+    void setPassword(String password);
+
     static AuthInfo loginUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof AuthInfo)

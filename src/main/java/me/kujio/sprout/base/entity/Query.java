@@ -28,36 +28,38 @@ public class Query {
         return new Query(Where.of(),Order.of(),null);
     }
 
-    public List<Where.Item> getWhere(EntityHandle<?> entityHandle) {
-        return where.stream()
-                .filter(i -> {
-                    if (i == null || !entityHandle.containsKey(Field.snake2Camel(i.getColumn()))){
-                        if (ignoreErr)
-                            return false;
-                        else if (i == null)
-                            throw new SysException("where条件为空");
-                        else
-                            throw new SysException(entityHandle.entityName() + "没有字段：" + Field.snake2Camel(i.getColumn()));
-                    }
-                    return true;
-                })
-                .collect(Collectors.toList());
+    public void appendWhere(Where.Item... items){
+        where.addAll(Arrays.stream(items).toList());
     }
 
-    public List<Order.Item> getOrder(EntityHandle<?> entityHandle) {
-        return order.stream()
-                .filter(i -> {
-                    if (i == null || !entityHandle.containsKey(Field.snake2Camel(i.getColumn()))){
-                        if (ignoreErr)
-                            return false;
-                        else if (i == null)
-                            throw new SysException("order条件为空");
-                        else
-                            throw new SysException(entityHandle.entityName() + "没有字段：" + Field.snake2Camel(i.getColumn()));
-                    }
+    public Where getWhere(EntityHandle<?> entityHandle) {
+        where.removeIf(item -> {
+            if (item == null || !entityHandle.containsKey(Field.snake2Camel(item.getColumn()))){
+                if (ignoreErr)
                     return true;
-                })
-                .collect(Collectors.toList());
+                else if (item == null)
+                    throw new SysException("where条件为空");
+                else
+                    throw new SysException(entityHandle.entityName() + "没有字段：" + Field.snake2Camel(item.getColumn()));
+            }
+            return false;
+        });
+        return where;
+    }
+
+    public Order getOrder(EntityHandle<?> entityHandle) {
+        order.removeIf(item -> {
+            if (item == null || !entityHandle.containsKey(Field.snake2Camel(item.getColumn()))){
+                if (ignoreErr)
+                    return true;
+                else if (item == null)
+                    throw new SysException("order条件为空");
+                else
+                    throw new SysException(entityHandle.entityName() + "没有字段：" + Field.snake2Camel(item.getColumn()));
+            }
+            return false;
+        });
+        return order;
     }
 
     public Page getPage() {

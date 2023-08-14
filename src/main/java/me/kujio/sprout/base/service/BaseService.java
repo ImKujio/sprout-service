@@ -68,14 +68,14 @@ public interface BaseService<T extends BaseEntity> {
     boolean exist(Integer id);
 
     /**
-     * 查询数据量
+     * 根据条件查询数据量
      * @return 数据量
      */
-    int total();
+    int count(@NonNull Query query);
 
     /**
      * 根据条件查询数据量
-     * @param criteria 条件
+     * @param where 条件
      * @return 数据量
      */
     int count(@NonNull Where where);

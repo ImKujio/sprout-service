@@ -26,13 +26,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        AuthInfo authInfo = sysLoginService.parseToken(request,response);
+        AuthInfo authInfo = sysLoginService.parseToken(request);
         if (authInfo != null){
             authInfo.setParameterMap(request.getParameterMap());
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(authInfo,null,authInfo.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            sysLoginService.refreshToken(authInfo,response);
+            sysLoginService.refreshToken(authInfo.getUsername(),authInfo.getUuid());
         }
         filterChain.doFilter(request,response);
     }

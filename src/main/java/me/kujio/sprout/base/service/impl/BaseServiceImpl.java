@@ -73,8 +73,9 @@ public abstract class BaseServiceImpl<T extends BaseEntity> implements BaseServi
     }
 
     @Override
-    public int total() {
-        return count(Where.of());
+    public int count(@NonNull Query query) {
+        Where where = query.getWhere(entityHandle);
+        return count(where);
     }
 
     @Override

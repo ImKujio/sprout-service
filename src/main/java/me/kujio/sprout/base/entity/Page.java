@@ -29,4 +29,8 @@ public class Page {
     public int getPage() {
         return page - 1;
     }
+
+    public int getOffset() {
+        return getSize() * getPage();
+    }
 }

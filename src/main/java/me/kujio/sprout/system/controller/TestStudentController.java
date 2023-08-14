@@ -28,9 +28,9 @@ public class TestStudentController {
         return OK(testStudentService.list(query));
     }
 
-    @GetMapping("/total")
-    public JRst total() {
-        return OK(testStudentService.total());
+    @GetMapping("/count")
+    public JRst count(Query query) {
+        return OK(testStudentService.count(query));
     }
 
     @GetMapping(value = "/{id}")
