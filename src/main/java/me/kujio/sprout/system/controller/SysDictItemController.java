@@ -12,7 +12,7 @@ import java.util.Set;
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
-@RequestMapping("/sys/dict-item")
+@RequestMapping("/sys-dict-item")
 public class SysDictItemController {
 
     private final SysDictItemService sysDictItemService;

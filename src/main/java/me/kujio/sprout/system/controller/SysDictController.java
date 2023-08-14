@@ -15,7 +15,7 @@ import java.util.Set;
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
-@RequestMapping("/sys/dict")
+@RequestMapping("/sys-dict")
 public class SysDictController {
 
     private final SysDictService sysDictService;

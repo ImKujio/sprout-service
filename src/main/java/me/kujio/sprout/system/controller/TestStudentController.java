@@ -14,7 +14,7 @@ import java.util.Set;
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
-@RequestMapping("/test/student")
+@RequestMapping("/test-student")
 public class TestStudentController {
 
     private final TestStudentService testStudentService;
