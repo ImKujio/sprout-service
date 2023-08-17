@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.kujio.sprout.base.entity.EntityHandle;
 import me.kujio.sprout.base.entity.BaseEntity;
+import me.kujio.sprout.core.table.Table;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.time.LocalTime;
  * 测试学生
  */
 @Data
+@Table("test_student")
 @EqualsAndHashCode(callSuper = true)
 public class TestStudent extends BaseEntity {
 

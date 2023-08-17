@@ -8,6 +8,7 @@ public class SproutApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SproutApplication.class, args);
+        System.out.println("------------------launch complete---------------------");
     }
 
 }

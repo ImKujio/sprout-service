@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import me.kujio.sprout.base.entity.BaseEntity;
 import me.kujio.sprout.base.entity.EntityHandle;
+import me.kujio.sprout.core.table.Table;
 import me.kujio.sprout.dict.SysOwner;
 import org.springframework.stereotype.Component;
 
 @Data
+@Table("sys_dict")
 @EqualsAndHashCode(callSuper = true)
 public class SysDict extends BaseEntity {
 

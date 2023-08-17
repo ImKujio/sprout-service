@@ -1,85 +1,23 @@
-package me.kujio.sprout.base.entity;
+package me.kujio.sprout.utils;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Transient;
 
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-@Data
-@EqualsAndHashCode(callSuper = true)
-class User extends Table{
-    private String name;
-    private Integer age;
-    @Transient
-    private LocalDate brith;
-
-    public static void main(String[] args) {
-        User user = new User();
-        System.out.println(user.getTable());
-        System.out.println(user.getProps());
-    }
-}
-
-record Prop(String name, String column) {
-}
 
 
-public class Table {
-    private final List<Prop> props;
-    private final String table;
+public class EntityUtil {
 
-    private Integer id;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public List<Prop> getProps() {
-        return props;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Table table = (Table) o;
-        return Objects.equals(id, table.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    public Table() {
-        Class<? extends Table> clazz = this.getClass();
-        table = pascal2Camel(clazz.getSimpleName());
-        props = getProps(clazz);
-    }
-
-    public static List<Prop> getProps(Class<?> entityClass) {
-        List<Prop> props = new ArrayList<>();
+    public static List<String> getProps(Class<?> entityClass) {
+        List<String> props = new ArrayList<>();
         Method[] methods = entityClass.getMethods();
         for (Method method : methods) {
             String methodName = method.getName();
-            System.out.println(methodName);
             if (isSetterMethod(methodName) && !method.isAnnotationPresent(Transient.class)) {
                 String fieldName = getSetterFiled(methodName);
                 if (isTransient(entityClass, fieldName)) continue;
-                props.add(new Prop(fieldName, camel2Snake(fieldName)));
+                props.add(fieldName);
             }
         }
         return props;
