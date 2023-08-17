@@ -18,11 +18,28 @@ public class TableProvider implements ProviderMethodResolver {
         }}.toString();
     }
 
-    public static String add(){
-//        TableSchema tableSchema = TableRecord.getTableSchema(obj.getClass().getSimpleName());
+    public static String add(Object entity){
+        TableSchema tableSchema = TableRecord.getTableSchema(entity.getClass().getSimpleName());
         return new SQL(){{
-            INSERT_INTO("tab");
-            VALUES("a,b","#{entity.name},#{}");
+            INSERT_INTO(tableSchema.getName());
+            VALUES(tableSchema.getColumnsSql(), tableSchema.getValuesSql());
+        }}.toString();
+    }
+
+    public static String add(Object... entities){
+        TableSchema tableSchema = TableRecord.getTableSchema(entities[0].getClass().getSimpleName());
+        return new SQL(){{
+            INSERT_INTO(tableSchema.getName());
+            INTO_COLUMNS(tableSchema.getColumnsSql());
+            INTO_VALUES(tableSchema.getValuesSql(entities.length));
+        }}.toString();
+    }
+
+    public static String set(Object entity,String... nullableProps){
+        TableSchema tableSchema = TableRecord.getTableSchema(entity.getClass().getSimpleName());
+        return new SQL(){{
+            UPDATE(tableSchema.getName());
+            SET(tableSchema.getUpdateSql(entity,nullableProps));
         }}.toString();
     }
 

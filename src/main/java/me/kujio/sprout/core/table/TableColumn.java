@@ -1,5 +1,7 @@
 package me.kujio.sprout.core.table;
 
-public record TableColumn(String column,String prop){
+import java.lang.reflect.Method;
+
+public record TableColumn(String column, String field, Method getterMethod){
 
 }
