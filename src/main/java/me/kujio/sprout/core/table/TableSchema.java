@@ -69,13 +69,13 @@ public class TableSchema {
         return values;
     }
 
-    public String getUpdateSql(Object entity, String... nullableProps) {
-        Set<String> forceProps = Set.of(nullableProps);
+    public String getUpdateSql(Object entity, String... fixFields) {
+        Set<String> fixFieldSet = Set.of(fixFields);
         StringBuilder sb = new StringBuilder();
         try {
             for (TableColumn column : columns) {
                 Object obj = column.getterMethod().invoke(entity);
-                if (obj == null && !forceProps.contains(column.field())) continue;
+                if (obj == null && !fixFieldSet.contains(column.field())) continue;
                 if (!sb.isEmpty()) sb.append(",");
                 sb.append("`").append(column.column()).append("`=#{entity.").append(column.field()).append("}");
             }

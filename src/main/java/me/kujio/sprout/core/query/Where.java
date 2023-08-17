@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import me.kujio.sprout.core.exception.SysException;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -108,9 +106,33 @@ public final class Where {
                     if (i != 0) valSb.append(",");
                     valSb.append(values[i].toString());
                 }
+                valSb.append(")");
             }
         }
         return field + " " + type + " " + valSb;
+    }
+
+    public String getQuerySql(String table,int index){
+        StringBuilder sb = new StringBuilder(table);
+        sb.append(".`").append(field).append("` ").append(type).append(" ");
+        switch (type){
+            case "=", "<", "<=", ">", ">=", "LIKE" -> {
+                sb.append("#{query.wheres[").append(index).append("].values[0]}");
+            }
+            case "BETWEEN", "IN" -> {
+                sb.append("(");
+                for (int i = 0; i < values.length; i++) {
+                    if (i != 0) sb.append(",");
+                    sb.append("#{query.wheres[").append(index).append("].values[").append(i).append("]}");
+                }
+                sb.append(")");
+            }
+        }
+        return sb.toString();
+    }
+
+    public String getSql(String table,int index){
+        return getQuerySql(table,index).replace("query.","");
     }
 
 }

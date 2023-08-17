@@ -36,10 +36,13 @@ public final class Order {
         return new Order(true,field,type);
     }
 
-
     @Override
     public String toString() {
         return field + " " + type;
+    }
+
+    public String getSql(String table){
+        return table + ".`" + field + "` " + type;
     }
 
 }
