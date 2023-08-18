@@ -1,6 +1,6 @@
 package me.kujio.sprout.core.resolver;
 
-import me.kujio.sprout.base.entity.Query;
+import me.kujio.sprout.core.entity.Query;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

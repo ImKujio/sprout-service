@@ -1,4 +1,4 @@
-package me.kujio.sprout.core.query;
+package me.kujio.sprout.core.entity;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,6 +18,16 @@ public class Query {
         return this;
     }
 
+    public Query add(@NonNull Where... wheres) {
+        this.wheres.addAll(Arrays.asList(wheres));
+        return this;
+    }
+
+    public Query add(@NonNull List<Where> wheres) {
+        this.wheres.addAll(wheres);
+        return this;
+    }
+
     public Query add(@NonNull Order order) {
         orders.add(order);
         return this;
@@ -26,6 +36,10 @@ public class Query {
     public Query add(@NonNull Page page) {
         this.page = page;
         return this;
+    }
+
+    public static Query all(){
+        return new Query();
     }
 
     public static Query fromParams(Map<String, String[]> params) {

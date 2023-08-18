@@ -42,7 +42,9 @@ public class TableRecord {
                 Table table = entityClass.getAnnotation(Table.class);
                 if (table == null) continue;
                 List<TableColumn> columns = getTableColumns(entityClass);
-                tablesMap.put(entityClass.getSimpleName(), new TableSchema(table.value(), columns));
+                String tableName = table.value();
+                if (tableName.isBlank()) tableName = entityClass.getSimpleName();
+                tablesMap.put(entityClass.getSimpleName(), new TableSchema(tableName, table.primaryKey(),table.increment(), columns));
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

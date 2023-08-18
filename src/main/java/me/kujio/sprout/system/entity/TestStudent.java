@@ -1,11 +1,7 @@
 package me.kujio.sprout.system.entity;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import me.kujio.sprout.base.entity.EntityHandle;
-import me.kujio.sprout.base.entity.BaseEntity;
 import me.kujio.sprout.core.table.Table;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,9 +13,8 @@ import java.time.LocalTime;
  */
 @Data
 @Table("test_student")
-@EqualsAndHashCode(callSuper = true)
-public class TestStudent extends BaseEntity {
-
+public class TestStudent {
+    private Integer id;
     private String name;
     private String avatar;
     private Integer age;
@@ -29,22 +24,5 @@ public class TestStudent extends BaseEntity {
     private LocalDate birthday;
     private LocalTime schoolDismissalTime;
     private LocalDateTime registrationTime;
-
-    @Component
-    public static class Handle extends EntityHandle<TestStudent> {
-        {
-            getter(TestStudent::new);
-            put("id", accessor(TestStudent::getId, TestStudent::setId));
-            put("name", accessor(TestStudent::getName, TestStudent::setName));
-            put("avatar", accessor(TestStudent::getAvatar, TestStudent::setAvatar));
-            put("sex", accessor(TestStudent::getSex, TestStudent::setSex));
-            put("age", accessor(TestStudent::getAge, TestStudent::setAge));
-            put("stay", accessor(TestStudent::getStay, TestStudent::setStay));
-            put("score", accessor(TestStudent::getScore, TestStudent::setScore));
-            put("birthday", accessor(TestStudent::getBirthday, TestStudent::setBirthday));
-            put("schoolDismissalTime", accessor(TestStudent::getSchoolDismissalTime, TestStudent::setSchoolDismissalTime));
-            put("registrationTime", accessor(TestStudent::getRegistrationTime, TestStudent::setRegistrationTime));
-        }
-    }
 
 }

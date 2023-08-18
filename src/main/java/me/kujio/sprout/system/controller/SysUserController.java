@@ -1,15 +1,14 @@
 package me.kujio.sprout.system.controller;
 
-import me.kujio.sprout.base.entity.Query;
-import me.kujio.sprout.core.entity.AuthInfo;
 import me.kujio.sprout.core.entity.JRst;
+import me.kujio.sprout.core.entity.Query;
 import me.kujio.sprout.system.entity.SysUser;
 import me.kujio.sprout.system.service.SysUserService;
 import me.kujio.sprout.utils.FileUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
+import java.util.List;
 
 import static me.kujio.sprout.core.entity.JRst.OK;
 
@@ -39,7 +38,7 @@ public class SysUserController {
     }
 
     @GetMapping("/all")
-    public JRst all(@RequestParam Set<String> fields) {
+    public JRst all(@RequestParam List<String> fields) {
         fields.retainAll(SysUser.secureFields);
         return OK(sysUserService.all(fields));
     }

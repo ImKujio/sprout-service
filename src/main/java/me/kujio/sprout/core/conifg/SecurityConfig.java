@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.annotation.Anonymous;
 import me.kujio.sprout.core.filter.JwtFilter;
 import me.kujio.sprout.core.resolver.ExceptionResolver;
+import me.kujio.sprout.core.service.AuthInfoService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -32,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtFilter jwtFilter;
     private final ExceptionResolver exceptionResolver;
     private final ApplicationContext applicationContext;
-    private final UserDetailsService userDetailsService;
+    private final AuthInfoService authInfoService;
 
 
     @Override
@@ -54,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(authInfoService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     private String[] anonymousUrls() {

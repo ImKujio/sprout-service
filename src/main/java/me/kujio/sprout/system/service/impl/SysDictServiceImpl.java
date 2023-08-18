@@ -1,47 +1,38 @@
 package me.kujio.sprout.system.service.impl;
 
-import me.kujio.sprout.base.entity.EntityHandle;
-import me.kujio.sprout.base.entity.Where;
-import me.kujio.sprout.base.entity.WithItems;
-import me.kujio.sprout.base.service.impl.BaseServiceImpl;
+import me.kujio.sprout.core.entity.Query;
+import me.kujio.sprout.core.mapper.TableMapper;
+import me.kujio.sprout.core.service.TableServiceImpl;
 import me.kujio.sprout.system.entity.SysDict;
 import me.kujio.sprout.system.entity.SysDictItem;
 import me.kujio.sprout.system.service.SysDictItemService;
 import me.kujio.sprout.system.service.SysDictService;
 import me.kujio.sprout.utils.CacheUtils;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Service
-public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysDictService {
+public class SysDictServiceImpl extends TableServiceImpl<SysDict> implements SysDictService {
 
     private final SysDictItemService sysDictItemService;
 
-    private final String cacheKeyAllDict;
-
-    public SysDictServiceImpl(EntityHandle<SysDict> entityHandle, SysDictItemService sysDictItemService) {
-        super(entityHandle);
+    public SysDictServiceImpl(
+            SysDictItemService sysDictItemService
+    ) {
         this.sysDictItemService = sysDictItemService;
-
-        // 当字典项更新时，删除allDict的缓存
-        this.cacheKeyAllDict = entityHandle.entityName() + ": allDict";
-        sysDictItemService.onUpdate(() -> CacheUtils.del(cacheKeyAllDict));
     }
 
     @Override
     public Map<String, Map<Integer, SysDictItem>> allDict() {
-        return CacheUtils.getOrPut(cacheKeyAllDict, () -> {
-            Map<Integer, Map<String, Object>> dictNameMap = all(Set.of("name"));
+        return CacheUtils.getOrPut(sysDictItemService.cacheKey("allDict"), () -> {
+            Map<Integer, SysDict> dictNameMap = all(List.of("name"));
             Map<String, Map<Integer, SysDictItem>> allDict = new HashMap<>();
-            List<SysDictItem> dictItems = sysDictItemService.list(Where.of());
+            List<SysDictItem> dictItems = sysDictItemService.list(Query.all());
             for (SysDictItem dictItem : dictItems) {
-                String dictName = String.valueOf(allValue(dictNameMap, dictItem.getDict(), "name"));
-                if (dictName.equals("null")) continue;
+                String dictName = dictNameMap.get(dictItem.getDict()).getName();
                 Map<Integer, SysDictItem> dict = allDict.computeIfAbsent(dictName, k -> new HashMap<>());
                 dict.put(dictItem.getId(), dictItem);
             }
@@ -50,12 +41,14 @@ public class SysDictServiceImpl extends BaseServiceImpl<SysDict> implements SysD
     }
 
     @Override
-    public void putWithItems(WithItems<SysDict, SysDictItem> withItems) {
-        put(withItems.getData());
-        List<SysDictItem> dictItems = sysDictItemService.list(Where.of(Where.item("dict", "=", withItems.dataId())));
-        withItems.compare(dictItems, puItem -> {
-            puItem.setDict(withItems.dataId());
-            sysDictItemService.put(puItem);
-        }, delItem -> sysDictItemService.del(delItem.getId()));
+    public void putWithItems(SysDict sysDict, List<SysDictItem> items) {
+        put(sysDict);
+        sysDictItemService.put(items, "dict", sysDict.getId());
+    }
+
+    @Override
+    public void clearCache() {
+        super.clearCache();
+        sysDictItemService.clearCache();
     }
 }

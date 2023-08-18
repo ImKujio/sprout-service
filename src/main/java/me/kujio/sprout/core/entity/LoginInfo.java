@@ -17,8 +17,8 @@ public class LoginInfo {
             throw new SysException("登录信息不能为空");
         if (name.isBlank() || password.isBlank() || key.isBlank() || captcha.isBlank())
             throw new SysException("登录信息不能为空");
-        String code = CacheUtils.get("captcha: " + key);
-        CacheUtils.del("captcha: " + key);
+        String code = CacheUtils.get("captcha:" + key);
+        CacheUtils.del("captcha:" + key);
         if (!captcha.equals(code)) throw new SysException("验证码错误");
     }
 

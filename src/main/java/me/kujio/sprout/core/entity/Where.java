@@ -1,4 +1,4 @@
-package me.kujio.sprout.core.query;
+package me.kujio.sprout.core.entity;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -55,7 +55,7 @@ public final class Where {
     }
 
     public static Where in(@NonNull String field, @NonNull Object... values) {
-        if (values.length < 1) throw new SysException("Where BETWEEN values length is less than 2");
+        if (values.length < 1) throw new SysException("Where IN values is empty");
         return new Where(true, field, "IN", values);
     }
 
@@ -96,7 +96,7 @@ public final class Where {
     @Override
     public String toString() {
         StringBuilder valSb = new StringBuilder();
-        switch (type){
+        switch (type) {
             case "=", "<", "<=", ">", ">=", "LIKE" -> {
                 valSb.append(values[0].toString());
             }
@@ -112,10 +112,10 @@ public final class Where {
         return field + " " + type + " " + valSb;
     }
 
-    public String getQuerySql(String table,int index){
+    public String getQuerySql(String table, int index) {
         StringBuilder sb = new StringBuilder(table);
         sb.append(".`").append(field).append("` ").append(type).append(" ");
-        switch (type){
+        switch (type) {
             case "=", "<", "<=", ">", ">=", "LIKE" -> {
                 sb.append("#{query.wheres[").append(index).append("].values[0]}");
             }
@@ -131,8 +131,8 @@ public final class Where {
         return sb.toString();
     }
 
-    public String getSql(String table,int index){
-        return getQuerySql(table,index).replace("query.","");
+    public String getSql(String table, int index) {
+        return getQuerySql(table, index).replace("query.", "");
     }
 
 }

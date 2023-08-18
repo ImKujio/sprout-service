@@ -1,30 +1,16 @@
 package me.kujio.sprout.system.entity;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import me.kujio.sprout.base.entity.BaseEntity;
-import me.kujio.sprout.base.entity.EntityHandle;
-import org.springframework.stereotype.Component;
+import me.kujio.sprout.core.table.Table;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class SysDictItem extends BaseEntity {
+@Table("sys_dict_item")
+public class SysDictItem {
+    private Integer id;
     private Integer dict;
     private String name;
     private String label;
     private String style;
     private String remark;
 
-    @Component
-    public static class Handle extends EntityHandle<SysDictItem> {
-        {
-            getter(SysDictItem::new);
-            put("id", accessor(SysDictItem::getId, SysDictItem::setId));
-            put("dict", accessor(SysDictItem::getDict, SysDictItem::setDict));
-            put("name", accessor(SysDictItem::getName, SysDictItem::setName));
-            put("label", accessor(SysDictItem::getLabel, SysDictItem::setLabel));
-            put("style", accessor(SysDictItem::getStyle, SysDictItem::setStyle));
-            put("remark", accessor(SysDictItem::getRemark, SysDictItem::setRemark));
-        }
-    }
 }

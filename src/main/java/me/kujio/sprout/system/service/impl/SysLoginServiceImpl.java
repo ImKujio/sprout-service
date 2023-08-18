@@ -50,7 +50,7 @@ public class SysLoginServiceImpl implements SysLoginService {
     public LoginInfo.Captcha captcha() {
         String key = String.valueOf(System.nanoTime());
         CircleCaptcha captcha = CaptchaUtil.createCircleCaptcha(200, 100, 4, 20);
-        CacheUtils.put("captcha: " + key, captcha.getCode(),TokenConfig.getValidity());
+        CacheUtils.put("captcha:" + key, captcha.getCode(),TokenConfig.getValidity());
         return new LoginInfo.Captcha(key, captcha.getImageBase64Data());
     }
 

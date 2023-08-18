@@ -1,4 +1,4 @@
-package me.kujio.sprout.core.query;
+package me.kujio.sprout.core.entity;
 
 import lombok.Getter;
 

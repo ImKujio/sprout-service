@@ -2,13 +2,11 @@ package me.kujio.sprout.system.entity;
 
 import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import me.kujio.sprout.base.entity.BaseEntity;
-import me.kujio.sprout.base.entity.EntityHandle;
 import me.kujio.sprout.core.entity.AuthInfo;
+import me.kujio.sprout.core.table.Table;
 import me.kujio.sprout.dict.SysOwner;
+import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -18,8 +16,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class SysUser extends BaseEntity implements AuthInfo {
+@Table("sys_user")
+public class SysUser implements AuthInfo {
+    private Integer id;
     private String name;
     private String nickName;
     private String avatar;
@@ -28,9 +27,12 @@ public class SysUser extends BaseEntity implements AuthInfo {
     private String permissions;
     private LocalDateTime createTime;
     private Integer owner;
+    @Transient
     private Set<Authority> authorities;
+    @Transient
     @JSONField(serialize = false)
     private Map<String, String[]> parameterMap;
+    @Transient
     @JSONField(serialize = false)
     private String uuid;
 
@@ -119,21 +121,6 @@ public class SysUser extends BaseEntity implements AuthInfo {
     public static Set<String> secureFields = Set.of(
             "id", "name", "nickName", "avatar", "createTime", "owner", "permissions"
     );
-
-    @Component
-    public static class Handle extends EntityHandle<SysUser> {
-        {
-            getter(SysUser::new);
-            put("id", accessor(SysUser::getId, SysUser::setId));
-            put("name", accessor(SysUser::getName, SysUser::setName));
-            put("nickName", accessor(SysUser::getNickName, SysUser::setNickName));
-            put("avatar",accessor(SysUser::getAvatar,SysUser::setAvatar));
-            put("permissions", accessor(SysUser::getPermissions, SysUser::setPermissions));
-            put("password", accessor(SysUser::getPassword, SysUser::setPassword));
-            put("createTime", accessor(SysUser::getCreateTime, SysUser::setCreateTime));
-            put("owner", accessor(SysUser::getOwner, SysUser::setOwner));
-        }
-    }
 
     public record Authority(String authority) implements GrantedAuthority {
         @Override

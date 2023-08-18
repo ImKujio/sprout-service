@@ -1,12 +1,12 @@
 package me.kujio.sprout.system.controller;
 
-import me.kujio.sprout.base.entity.Query;
 import me.kujio.sprout.core.entity.JRst;
+import me.kujio.sprout.core.entity.Query;
 import me.kujio.sprout.system.entity.SysMenu;
 import me.kujio.sprout.system.service.SysMenuService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
 
 import static me.kujio.sprout.core.entity.JRst.OK;
 
@@ -41,7 +41,7 @@ public class SysMenuController {
     }
 
     @GetMapping("/all")
-    public JRst all(@RequestParam Set<String> fields) {
+    public JRst all(@RequestParam List<String> fields) {
         return OK(sysMenuService.all(fields));
     }
 

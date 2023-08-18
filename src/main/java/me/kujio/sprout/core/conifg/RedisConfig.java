@@ -20,9 +20,9 @@ import java.nio.charset.StandardCharsets;
 public class RedisConfig {
 
     @Bean
-    @SuppressWarnings(value = { "unchecked", "rawtypes" })
-    public  RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory connectionFactory){
-        RedisTemplate<Object, Object>  template= new RedisTemplate<>();
+    @SuppressWarnings(value = {"unchecked", "rawtypes"})
+    public RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory connectionFactory) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
 
         //设置key的序列化和反序列化类型 采用StringRedisSerializer
         template.setKeySerializer(new StringRedisSerializer());
@@ -37,41 +37,37 @@ public class RedisConfig {
         return template;
     }
 
-    public static class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
+}
 
-        public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
 
-        private final Class<T> clazz;
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-        public FastJsonRedisSerializer(Class<T> clazz) {
-            super();
-            this.clazz = clazz;
+    private final Class<T> clazz;
+
+    public FastJsonRedisSerializer(Class<T> clazz) {
+        super();
+        this.clazz = clazz;
+    }
+
+    @Override
+    public byte[] serialize(Object t) throws SerializationException {
+
+        if (t == null) {
+            return new byte[0];
         }
+        return JSON.toJSONString(t, JSONWriter.Feature.WriteClassName).getBytes(DEFAULT_CHARSET);
+    }
 
-        @Override
-        public byte[] serialize(Object t) throws SerializationException {
+    @Override
+    public T deserialize(byte[] bytes) throws SerializationException {
 
-            if (t == null) {
-                return new byte[0];
-            }
-            return JSON.toJSONString(t, JSONWriter.Feature.WriteClassName).getBytes(DEFAULT_CHARSET);
+        if (bytes == null || bytes.length == 0) {
+            return null;
         }
+        String str = new String(bytes, DEFAULT_CHARSET);
 
-        @Override
-        public T deserialize(byte[] bytes) throws SerializationException {
-
-            if (bytes == null || bytes.length == 0) {
-                return null;
-            }
-            String str = new String(bytes, DEFAULT_CHARSET);
-
-            JSON.parseObject(str,JSONReader.Feature.SupportAutoType);
-
-            return JSON.parseObject(str, clazz, JSONReader.Feature.SupportAutoType);
-        }
-
+        return JSON.parseObject(str, clazz, JSONReader.Feature.SupportAutoType);
     }
 
 }
-
-
