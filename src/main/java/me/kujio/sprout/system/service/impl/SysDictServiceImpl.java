@@ -1,7 +1,6 @@
 package me.kujio.sprout.system.service.impl;
 
 import me.kujio.sprout.core.entity.Query;
-import me.kujio.sprout.core.mapper.TableMapper;
 import me.kujio.sprout.core.service.TableServiceImpl;
 import me.kujio.sprout.system.entity.SysDict;
 import me.kujio.sprout.system.entity.SysDictItem;
@@ -28,7 +27,7 @@ public class SysDictServiceImpl extends TableServiceImpl<SysDict> implements Sys
     @Override
     public Map<String, Map<Integer, SysDictItem>> allDict() {
         return CacheUtils.getOrPut(sysDictItemService.cacheKey("allDict"), () -> {
-            Map<Integer, SysDict> dictNameMap = all(List.of("name"));
+            Map<Integer, SysDict> dictNameMap = dict(List.of("name"));
             Map<String, Map<Integer, SysDictItem>> allDict = new HashMap<>();
             List<SysDictItem> dictItems = sysDictItemService.list(Query.all());
             for (SysDictItem dictItem : dictItems) {
@@ -43,6 +42,7 @@ public class SysDictServiceImpl extends TableServiceImpl<SysDict> implements Sys
     @Override
     public void putWithItems(SysDict sysDict, List<SysDictItem> items) {
         put(sysDict);
+        items.forEach(item -> item.setDict(sysDict.getId()));
         sysDictItemService.put(items, "dict", sysDict.getId());
     }
 

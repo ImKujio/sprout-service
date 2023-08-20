@@ -40,9 +40,9 @@ public class SysMenuController {
         return OK(sysMenuService.get(id));
     }
 
-    @GetMapping("/all")
-    public JRst all(@RequestParam List<String> fields) {
-        return OK(sysMenuService.all(fields));
+    @GetMapping("/dict")
+    public JRst dict(@RequestParam List<String> fields) {
+        return OK(sysMenuService.dict(fields));
     }
 
     @PutMapping

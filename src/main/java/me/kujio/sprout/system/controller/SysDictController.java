@@ -44,9 +44,9 @@ public class SysDictController {
         return OK(sysDictService.get(id));
     }
 
-    @GetMapping("/all")
-    public JRst all(@RequestParam List<String> fields) {
-        return OK(sysDictService.all(fields));
+    @GetMapping("/dict")
+    public JRst dict(@RequestParam List<String> fields) {
+        return OK(sysDictService.dict(fields));
     }
 
     @PutMapping

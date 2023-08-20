@@ -11,10 +11,10 @@ import java.util.List;
 
 public class TableProvider implements ProviderMethodResolver {
 
-    public static String list(@Param("entity") String entity, @Param("query") Query query) {
-        TableSchema tableSchema = TableRecord.getTableSchema(entity);
+    public static String list(@Param("schema") String schema, @Param("query") Query query) {
+        TableSchema tableSchema = TableRecord.getTableSchema(schema);
         return new SQL() {{
-            SELECT(tableSchema.getSelectSql());
+            SELECT(tableSchema.getSelectSql(query.getFields()));
             FROM(tableSchema.getName());
             WHERE(wheresQuerySql(tableSchema.getName(), query));
             ORDER_BY(ordersSql(tableSchema.getName(), query.getOrders()));
@@ -25,8 +25,8 @@ public class TableProvider implements ProviderMethodResolver {
         }}.toString();
     }
 
-    public static String count(@Param("entity") String entity, @Param("wheres") List<Where> wheres) {
-        TableSchema tableSchema = TableRecord.getTableSchema(entity);
+    public static String count(@Param("schema") String schema, @Param("wheres") List<Where> wheres) {
+        TableSchema tableSchema = TableRecord.getTableSchema(schema);
         return new SQL() {{
             SELECT("COUNT(*)");
             FROM(tableSchema.getName());
@@ -34,55 +34,39 @@ public class TableProvider implements ProviderMethodResolver {
         }}.toString();
     }
 
-    public static String all(@Param("entity") String entity,@Param("fields") List<String> fields){
-        TableSchema tableSchema = TableRecord.getTableSchema(entity);
-        return new SQL(){{
-           SELECT(tableSchema.getAllSql(fields));
-           FROM(tableSchema.getName());
-        }}.toString();
-    }
 
-    public static String get(@Param("entity") String entity, @Param("field") String field, @Param("value") Object value) {
-        TableSchema tableSchema = TableRecord.getTableSchema(entity);
+    public static String get(@Param("schema") String schema, @Param("field") String field, @Param("value") Object value) {
+        TableSchema tableSchema = TableRecord.getTableSchema(schema);
         return new SQL() {{
-            SELECT(tableSchema.getSelectSql());
+            SELECT(tableSchema.getSelectSql(null));
             FROM(tableSchema.getName());
             WHERE(tableSchema.getFieldWhereSql(field));
             LIMIT(1);
         }}.toString();
     }
 
-    public static String add(@Param("entities") List<Object> entities) {
-        TableSchema tableSchema = TableRecord.getTableSchema(entities.get(0).getClass().getSimpleName());
+    public static String add(@Param("schema") String schema, @Param("entities") List<Object> entities) {
+        TableSchema tableSchema = TableRecord.getTableSchema(schema);
         return new SQL() {{
             INSERT_INTO(tableSchema.getName());
             INTO_COLUMNS(tableSchema.getColumnsSql());
-            INTO_VALUES(tableSchema.getValuesSql(entities.size()));
-        }}.toString();
+        }} + tableSchema.getValuesSql(entities);
     }
 
-    public static String set(@Param("entity") Object entity, @Param("fixFields") String... fixFields) {
-        TableSchema tableSchema = TableRecord.getTableSchema(entity.getClass().getSimpleName());
+    public static String set(@Param("schema") String schema, @Param("entity") Object entity, @Param("fixFields") List<String> fixFields) {
+        TableSchema tableSchema = TableRecord.getTableSchema(schema);
         return new SQL() {{
             UPDATE(tableSchema.getName());
             SET(tableSchema.getUpdateSql(entity, fixFields));
+            WHERE(tableSchema.getUpdateWhereSql(entity));
         }}.toString();
     }
 
-    public static String del(@Param("entity") String entity, @Param("wheres") List<Where> wheres) {
-        TableSchema tableSchema = TableRecord.getTableSchema(entity);
+    public static String del(@Param("schema") String schema, @Param("wheres") List<Where> wheres) {
+        TableSchema tableSchema = TableRecord.getTableSchema(schema);
         return new SQL() {{
             DELETE_FROM(tableSchema.getName());
             WHERE(wheresSql(tableSchema.getName(), wheres));
-        }}.toString();
-    }
-
-    public static String exist(@Param("entity") String entity, @Param("field") String field, @Param("value") Object value){
-        TableSchema tableSchema = TableRecord.getTableSchema(entity);
-        return new SQL(){{
-            SELECT("COUNT(*)");
-            FROM(tableSchema.getName());
-            WHERE(tableSchema.getFieldWhereSql(field));
         }}.toString();
     }
 
@@ -112,5 +96,6 @@ public class TableProvider implements ProviderMethodResolver {
         }
         return lines;
     }
+
 
 }

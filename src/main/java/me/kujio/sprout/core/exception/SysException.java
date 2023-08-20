@@ -16,12 +16,20 @@ public final class SysException extends RuntimeException{
     }
 
     public SysException(String message) {
-        super(message);
-        this.code = SysException.SYSTEM;
+        this(message,null);
+    }
+
+    public SysException(String message,Throwable cause){
+        this(SysException.SYSTEM,message,cause);
     }
 
     public SysException(int code, String message) {
-        super(message);
+        this(code,message,null);
+    }
+
+    public SysException(int code,String message,Throwable cause){
+        super(message,cause);
         this.code = code;
     }
+
 }

@@ -11,6 +11,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -41,12 +42,13 @@ public class TableRecord {
                 Class<?> entityClass = Class.forName(className);
                 Table table = entityClass.getAnnotation(Table.class);
                 if (table == null) continue;
+                Constructor<?> constructor = entityClass.getConstructor();
                 List<TableColumn> columns = getTableColumns(entityClass);
-                String tableName = table.value();
-                if (tableName.isBlank()) tableName = entityClass.getSimpleName();
-                tablesMap.put(entityClass.getSimpleName(), new TableSchema(tableName, table.primaryKey(),table.increment(), columns));
+                String tableName = table.value().isBlank() ? pascal2Snake(entityClass.getSimpleName()) : table.value();
+                TableSchema tableSchema = new TableSchema(tableName, table.primaryKey(), table.increment(), columns, constructor);
+                tablesMap.put(entityClass.getSimpleName(), tableSchema);
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
     }
@@ -68,14 +70,22 @@ public class TableRecord {
 
     private static List<TableColumn> getTableColumns(Class<?> entityClass) {
         List<TableColumn> columns = new ArrayList<>();
-        for (Method method : entityClass.getMethods()) {
-            String methodName = method.getName();
-            if (isGetterMethod(method)) {
+        for (Method getterMethod : entityClass.getMethods()) {
+            String methodName = getterMethod.getName();
+            if (isGetterMethod(getterMethod)) {
                 String fieldName = getGetterFiled(methodName);
                 if (isTransientField(entityClass, fieldName)) continue;
-                if (!hasSetterMethod(entityClass,method)) continue;
+                Method settterMethod = getSetterMethod(entityClass, getterMethod);
+                if (settterMethod == null) continue;
                 String column = camel2Snake(fieldName);
-                columns.add(new TableColumn(column,fieldName,method));
+                columns.add(
+                        new TableColumn(
+                                column,
+                                fieldName,
+                                getterMethod,
+                                settterMethod,
+                                settterMethod.getParameterTypes()[0])
+                );
             }
         }
         return columns;
@@ -89,14 +99,13 @@ public class TableRecord {
                 && returnType != void.class && returnType != Class.class;
     }
 
-    private static boolean hasSetterMethod(Class<?> entityClass,Method getterMethod) {
+    private static Method getSetterMethod(Class<?> entityClass, Method getterMethod) {
         try {
             String methodName = getterMethod.getName().replace("get", "set");
             Class<?> paramType = getterMethod.getReturnType();
-            entityClass.getMethod(methodName, paramType);
-            return true;
-        }catch (Exception e){
-            return false;
+            return entityClass.getMethod(methodName, paramType);
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -130,6 +139,17 @@ public class TableRecord {
             sb.append(Character.toLowerCase(c));
         }
         return sb.toString().toLowerCase();
+    }
+
+    public static String pascal2Camel(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    public static String pascal2Snake(String str) {
+        return camel2Snake(pascal2Camel(str));
     }
 
 }

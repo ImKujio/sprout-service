@@ -3,7 +3,9 @@ package me.kujio.sprout.core.table;
 
 import me.kujio.sprout.core.exception.SysException;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,15 +17,17 @@ public class TableSchema {
     private final boolean increment;
     private final List<TableColumn> columns;
     private final HashMap<String, TableColumn> fieldsMap;
+    private final Constructor<?> constructor;
     private final String selectSql;
     private final String columnsSql;
     private final String valuesSql;
 
-    public TableSchema(String name, String primaryKey, boolean increment, List<TableColumn> columns) {
+    public TableSchema(String name, String primaryKey, boolean increment, List<TableColumn> columns, Constructor<?> constructor) {
         this.name = name;
         this.primaryKey = primaryKey;
         this.increment = increment;
         this.columns = columns;
+        this.constructor = constructor;
         HashMap<String, TableColumn> fieldsMap = new HashMap<>();
         StringBuilder selSb = new StringBuilder();
         StringBuilder colSb = new StringBuilder();
@@ -50,6 +54,11 @@ public class TableSchema {
         return fieldsMap.containsKey(field);
     }
 
+    public TableColumn getColumn(String field) {
+        return fieldsMap.get(field);
+    }
+
+
     public String getName() {
         return name;
     }
@@ -66,8 +75,22 @@ public class TableSchema {
         return columns;
     }
 
-    public String getSelectSql() {
-        return selectSql;
+    public Constructor<?> getConstructor() {
+        return constructor;
+    }
+
+    public String getSelectSql(List<String> fields) {
+        if (fields == null || fields.isEmpty()) return selectSql;
+        Set<String> mixFields = new HashSet<>(fields);
+        mixFields.add(primaryKey);
+        mixFields.retainAll(this.fieldsMap.keySet());
+        StringBuilder sb = new StringBuilder();
+        for (String mixField : mixFields) {
+            if (!sb.isEmpty()) sb.append(",");
+            TableColumn col = this.fieldsMap.get(mixField);
+            sb.append(name).append(".`").append(col.column()).append("` AS `").append(col.field()).append("`");
+        }
+        return sb.toString();
     }
 
     public String getColumnsSql() {
@@ -84,32 +107,33 @@ public class TableSchema {
         return name + ".`" + col.column() + "` = #{value}";
     }
 
-    public String getAllSql(List<String> fields) {
-        Set<String> mixFields = new HashSet<>(fields);
-        mixFields.add(primaryKey);
-        mixFields.removeAll(this.fieldsMap.keySet());
-        StringBuilder sb = new StringBuilder();
-        for (String mixField : mixFields) {
-            if (!sb.isEmpty()) sb.append(",");
-            TableColumn col = this.fieldsMap.get(mixField);
-            sb.append(name).append(".`").append(col.column()).append("` AS `").append(col.field()).append("`");
+    public String getValuesSql(List<Object> entities) {
+        StringBuilder sb = new StringBuilder(" VALUES");
+        for (int i = 0; i < entities.size(); i++) {
+            Object entity = entities.get(i);
+            sb.append(i == 0 ? " (" : ", (");
+            try {
+                for (int j = 0; j < columns.size(); j++) {
+                    if (j != 0) sb.append(",");
+                    TableColumn col = columns.get(j);
+                    Object obj = col.getterMethod().invoke(entity);
+                    if (obj != null) sb.append("#{entities[").append(i).append("].").append(col.field()).append("}");
+                    else sb.append("DEFAULT");
+                }
+            }catch (InvocationTargetException | IllegalAccessException e){
+                throw new SysException("create values sql failed!",e);
+            }
+            sb.append(")");
         }
         return sb.toString();
     }
 
-    public String[] getValuesSql(int length) {
-        String[] values = new String[length];
-        for (int i = 0; i < length; i++) {
-            values[i] = valuesSql.replaceAll("entity\\.", "entities[" + i + "]");
-        }
-        return values;
-    }
-
-    public String getUpdateSql(Object entity, String... fixFields) {
-        Set<String> fixFieldSet = Set.of(fixFields);
+    public String getUpdateSql(Object entity, List<String> fixFields) {
+        Set<String> fixFieldSet = new HashSet<>(fixFields);
         StringBuilder sb = new StringBuilder();
         try {
             for (TableColumn column : columns) {
+                if (column.field().equals(primaryKey)) continue;
                 Object obj = column.getterMethod().invoke(entity);
                 if (obj == null && !fixFieldSet.contains(column.field())) continue;
                 if (!sb.isEmpty()) sb.append(",");
@@ -121,7 +145,13 @@ public class TableSchema {
         }
     }
 
-    public Integer getPrimaryValue(Object entity){
+    public String getUpdateWhereSql(Object entity) {
+        Integer pkValue = getPrimaryValue(entity);
+        if (pkValue == null) throw new SysException("primary key of update data is null");
+        return name + ".`" + primaryKey + "` = #{entity." + primaryKey + "}";
+    }
+
+    public Integer getPrimaryValue(Object entity) {
         try {
             TableColumn column = fieldsMap.get(primaryKey);
             Object obj = column.getterMethod().invoke(entity);

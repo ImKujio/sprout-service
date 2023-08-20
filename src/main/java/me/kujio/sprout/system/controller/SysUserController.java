@@ -37,10 +37,10 @@ public class SysUserController {
         return OK(SysUser.secureGet(sysUserService.get(id)));
     }
 
-    @GetMapping("/all")
-    public JRst all(@RequestParam List<String> fields) {
+    @GetMapping("/dict")
+    public JRst dict(@RequestParam List<String> fields) {
         fields.retainAll(SysUser.secureFields);
-        return OK(sysUserService.all(fields));
+        return OK(sysUserService.dict(fields));
     }
 
     @PutMapping

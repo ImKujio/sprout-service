@@ -3,7 +3,6 @@ package me.kujio.sprout.system.service.impl;
 import cn.hutool.crypto.SecureUtil;
 import me.kujio.sprout.core.entity.AuthInfo;
 import me.kujio.sprout.core.exception.SysException;
-import me.kujio.sprout.core.mapper.TableMapper;
 import me.kujio.sprout.core.service.AuthInfoService;
 import me.kujio.sprout.core.service.TableServiceImpl;
 import me.kujio.sprout.system.entity.SysUser;

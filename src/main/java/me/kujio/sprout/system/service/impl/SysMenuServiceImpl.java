@@ -1,7 +1,6 @@
 package me.kujio.sprout.system.service.impl;
 
 import me.kujio.sprout.core.entity.Query;
-import me.kujio.sprout.core.mapper.TableMapper;
 import me.kujio.sprout.core.service.TableServiceImpl;
 import me.kujio.sprout.system.entity.SysMenu;
 import me.kujio.sprout.system.service.SysMenuService;

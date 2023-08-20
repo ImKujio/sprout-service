@@ -2,45 +2,35 @@ package me.kujio.sprout.core.mapper;
 
 import me.kujio.sprout.core.entity.Query;
 import me.kujio.sprout.core.entity.Where;
+import me.kujio.sprout.core.table.TableMap;
 import me.kujio.sprout.core.table.TableProvider;
-import me.kujio.sprout.system.entity.SysUser;
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.session.ResultHandler;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 public interface TableMapper {
 
     @SelectProvider(value = TableProvider.class, method = "list")
-    List<Map<String,Object>> list(@Param("entity") String entity, @Param("query") Query query);
-
-    @SelectProvider(value = TableProvider.class, method = "list")
-    Map<Integer,Map<String,Object>> map(@Param("entity") String entity, @Param("query") Query query);
+    List<TableMap> list(@Param("schema") String schema, @Param("query") Query query);
 
     @SelectProvider(value = TableProvider.class, method = "count")
-    int count(@Param("entity") String entity, @Param("wheres") List<Where> wheres);
-
-    @SelectProvider(value = TableProvider.class, method = "all")
-    Map<Integer,Map<String,Object>> all(@Param("entity") String entity,@Param("fields") List<String> fields);
+    int count(@Param("schema") String schema, @Param("wheres") List<Where> wheres);
 
     @SelectProvider(value = TableProvider.class, method = "get")
-    Map<String,Object> get(@Param("entity") String entity, @Param("field") String field, @Param("value") Object value);
+    TableMap get(@Param("schema") String schema, @Param("field") String field, @Param("value") Object value);
 
     @InsertProvider(value = TableProvider.class, method = "add")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    void add(@Param("entities") List<Object> entities);
+    @Options(useGeneratedKeys = true, keyProperty = "entities.id")
+    void add(@Param("schema") String schema, @Param("entities") List<?> entities);
 
     @UpdateProvider(value = TableProvider.class, method = "set")
-    void set(@Param("entity") Object entity, @Param("fixFields") String... fixFields);
+    void set(@Param("schema") String schema, @Param("entity") Object entity, @Param("fixFields") List<String> fixFields);
 
     @DeleteProvider(value = TableProvider.class, method = "del")
-    void del(@Param("entity") String entity, @Param("wheres") List<Where> wheres);
+    void del(@Param("schema") String schema, @Param("wheres") List<Where> wheres);
 
-    @SelectProvider(value = TableProvider.class, method = "exist")
-    boolean exist(@Param("entity") String entity, @Param("field") String field, @Param("value") Object value);
 
     @Component
     class Holder {

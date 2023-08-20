@@ -37,9 +37,9 @@ public class TestStudentController {
         return OK(testStudentService.get(id));
     }
 
-    @GetMapping("/all")
-    public JRst all(@RequestParam List<String> fields) {
-        return OK(testStudentService.all(fields));
+    @GetMapping("/dict")
+    public JRst dict(@RequestParam List<String> fields) {
+        return OK(testStudentService.dict(fields));
     }
 
     @PutMapping

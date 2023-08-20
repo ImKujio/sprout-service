@@ -4,6 +4,7 @@ import me.kujio.sprout.core.entity.Query;
 import me.kujio.sprout.core.entity.Where;
 import me.kujio.sprout.core.exception.SysException;
 import me.kujio.sprout.core.mapper.TableMapper;
+import me.kujio.sprout.core.table.TableMap;
 import me.kujio.sprout.core.table.TableRecord;
 import me.kujio.sprout.core.table.TableSchema;
 import me.kujio.sprout.utils.CacheUtils;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TableServiceImpl<T> implements TableService<T> {
     private String _entityName;
@@ -23,6 +25,7 @@ public class TableServiceImpl<T> implements TableService<T> {
         if (_entityName != null) return _entityName;
         String curName = getClass().getSimpleName();
         _entityName = curName.substring(0, curName.indexOf("ServiceImpl"));
+
         return _entityName;
     }
 
@@ -40,15 +43,8 @@ public class TableServiceImpl<T> implements TableService<T> {
 
     protected TableMapper tableMapper() {
         if (_tableMapper != null) return _tableMapper;
-        _tableMapper = TableMapper().Holder.get();
+        _tableMapper = TableMapper.Holder.get();
         return _tableMapper;
-    }
-
-    @Override
-    public List<T> list(Query query) {
-        validQuery(query);
-        return CacheUtils.getOrPut(queryKey("list", query),
-                () -> tableMapper().list(entityName(), query));
     }
 
     @Override
@@ -57,46 +53,46 @@ public class TableServiceImpl<T> implements TableService<T> {
     }
 
     @Override
-    public Map<Integer, T> map(Query query) {
+    public List<T> list(Query query) {
         validQuery(query);
-        return CacheUtils.getOrPut(queryKey("map", query),
-                () -> tableMapper().map(entityName(), query));
+        return CacheUtils.getOrPut(cacheKey("list", query.toString()),
+                () -> parseList(tableMapper().list(entityName(), query)));
     }
 
     @Override
-    public Map<Integer, T> map(List<Where> wheres) {
-        return map(new Query().add(wheres));
+    public Map<Integer, T> dict(List<String> fields) {
+        return dict(Query.dict(fields));
+    }
+
+    @Override
+    public Map<Integer, T> dict(Query query) {
+        validQuery(query);
+        return CacheUtils.getOrPut(cacheKey("dict", query.toString()),
+                () -> parseDict(tableMapper().list(entityName(), query)));
+    }
+
+
+
+    @Override
+    public int count(List<Where> wheres) {
+        return count(new Query().add(wheres));
     }
 
     @Override
     public int count(Query query) {
-        return count(query.getWheres());
-    }
-
-    @Override
-    public int count(List<Where> wheres) {
-        validWheres(wheres);
-        return CacheUtils.getOrPut(wheresKey("count", wheres),
-                () -> tableMapper().count(entityName(), wheres));
-    }
-
-    @Override
-    public Map<Integer, T> all(List<String> fields) {
-        validFields(fields);
-        return CacheUtils.getOrPut(fieldsKey("all", fields),
-                () -> tableMapper().all(entityName(), fields));
+        validQuery(query);
+        return CacheUtils.getOrPut(cacheKey("count", query.toString()),
+                () -> tableMapper().count(entityName(), query.getWheres()));
     }
 
     @Override
     public T get(Integer pkValue) {
-        return get(tableSchema().getPrimaryKey(), pkValue);
+        return get(tableSchema().getPrimaryKey(),pkValue);
     }
 
     @Override
     public T get(String field, Object value) {
-        validField(field);
-        T t = tableMapper().get(entityName(), field, value);
-        return t;
+        return parseEntity(tableMapper().get(entityName(), field, value));
     }
 
     @Override
@@ -106,19 +102,19 @@ public class TableServiceImpl<T> implements TableService<T> {
 
     @Override
     public void add(List<T> entities) {
-        tableMapper().add(entities);
+        tableMapper().add(entityName(), entities);
         logger().info("add:{}", entities);
         clearCache();
     }
 
     @Override
     public void set(T entity) {
-        set(entity, new String[]{});
+        set(entity,List.of());
     }
 
     @Override
-    public void set(T entity, String... fixFields) {
-        tableMapper().set(entity, fixFields);
+    public void set(T entity, List<String> fixFields) {
+        tableMapper().set(entityName(), entity, fixFields);
         logger().info("set:{},fix:{}", entity, fixFields);
         clearCache();
     }
@@ -142,7 +138,7 @@ public class TableServiceImpl<T> implements TableService<T> {
 
     @Override
     public void put(List<T> entities, List<Where> wheres) {
-        Map<Integer, T> rawList = map(wheres);
+        Map<Integer, T> rawList = dict(new Query().add(wheres));
         List<T> addList = new ArrayList<>();
         Set<Integer> retain = new HashSet<>();
         for (T entity : entities) {
@@ -189,7 +185,7 @@ public class TableServiceImpl<T> implements TableService<T> {
 
     @Override
     public boolean exist(String field, Object value) {
-        return tableMapper().exist(entityName(), field, value);
+        return tableMapper().count(entityName(),List.of(Where.equal(field,value))) > 0;
     }
 
     @Override
@@ -201,42 +197,39 @@ public class TableServiceImpl<T> implements TableService<T> {
         CacheUtils.delPrefix(entityName());
     }
 
-    protected String fieldsKey(String method, List<String> fields) {
-        Collections.sort(fields);
-        return entityName() + ":" + method + ":" + String.join(",", fields);
-    }
-
-    protected String queryKey(String method, Query query) {
-        return entityName() + ":" + method + ":" + query;
-    }
-
-    protected String wheresKey(String method, List<Where> wheres) {
-        return queryKey(method, new Query().add(wheres));
-    }
-
-    protected void validField(String field) {
-        if (!tableSchema().hasField(field)) throw new SysException("Field name is error:" + field);
-    }
-
-    protected void validFields(List<String> fields) {
-        fields.removeIf(field -> !tableSchema().hasField(field));
-    }
-
     protected void validQuery(Query query) {
-        validWheres(query.getWheres());
+        query.getWheres().removeIf(where -> {
+            if (tableSchema().hasField(where.getField())) return false;
+            else if (where.isIgnored()) return true;
+            else throw new SysException("Where field name is error:" + where);
+        });
         query.getOrders().removeIf(order -> {
             if (tableSchema().hasField(order.getField())) return false;
             else if (order.isIgnored()) return true;
             else throw new SysException("Order field name is error:" + order);
         });
-    }
-
-    protected void validWheres(List<Where> wheres) {
-        wheres.removeIf(where -> {
-            if (tableSchema().hasField(where.getField())) return false;
-            else if (where.isIgnored()) return true;
-            else throw new SysException("Where field name is error:" + where);
+        query.getFields().removeIf(field -> {
+            if (tableSchema().hasField(field)) return false;
+            else if (query.isIgnored()) return true;
+            else throw new SysException("Query field name is error:" + field);
         });
     }
 
+    @Override
+    public T parseEntity(TableMap tableMap) {
+        return tableMap.map(tableSchema());
+    }
+
+    @Override
+    public List<T> parseList(List<TableMap> tableMaps) {
+        return tableMaps.stream().map(this::parseEntity).toList();
+    }
+
+    @Override
+    public Map<Integer, T> parseDict(List<TableMap> tableMaps) {
+        return tableMaps.stream().map(this::parseEntity).collect(Collectors.toMap(
+                entity -> tableSchema().getPrimaryValue(entity),
+                entity -> entity
+        ));
+    }
 }

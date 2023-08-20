@@ -10,8 +10,13 @@ import java.util.*;
 public class Query {
     private final List<Where> wheres = new ArrayList<>();
     private final List<Order> orders = new ArrayList<>();
+    private final List<String> fields = new ArrayList<>();
     private Page page;
+    private boolean ignored;
 
+    public Query(){
+        ignored = false;
+    }
 
     public Query add(@NonNull Where where) {
         wheres.add(where);
@@ -33,6 +38,11 @@ public class Query {
         return this;
     }
 
+    public Query add(@NonNull String... fields){
+        this.fields.addAll(Arrays.asList(fields));
+        return this;
+    }
+
     public Query add(@NonNull Page page) {
         this.page = page;
         return this;
@@ -42,8 +52,19 @@ public class Query {
         return new Query();
     }
 
+    public static Query dict(@NonNull String... fields){
+        return new Query().add(fields);
+    }
+
+    public static Query dict(@NonNull List<String> fields){
+        Query query = new Query();
+        query.fields.addAll(fields);
+        return query;
+    }
+
     public static Query fromParams(Map<String, String[]> params) {
         Query query = new Query();
+        query.ignored = true;
         Set<String> whereFields = new HashSet<>();
         Set<String> orderFields = new HashSet<>();
         for (String key : params.keySet()) {
@@ -85,18 +106,27 @@ public class Query {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         List<String> whereLines = wheres.stream().map(Where::toString).sorted().toList();
+        if (!whereLines.isEmpty()){
+            sb.append("wheres:");
+        }
         for (String where : whereLines) {
-            if (!sb.isEmpty()) sb.append(" ");
-            sb.append(where);
+            sb.append(" ").append(where);
         }
         List<String> orderLines = orders.stream().map(Order::toString).sorted().toList();
+        if (!orderLines.isEmpty()){
+            sb.append("orders:");
+        }
         for (String order : orderLines) {
-            if (!sb.isEmpty()) sb.append(" ");
-            sb.append(order);
+            sb.append(" ").append(order);
+        }
+        if (!fields.isEmpty()){
+            sb.append("fields");
+        }
+        for (String field : fields) {
+            sb.append(" ").append(field);
         }
         if (page != null) {
-            if (!sb.isEmpty()) sb.append(" ");
-            sb.append(page.toString());
+            sb.append("page: ").append(page);
         }
         return sb.toString();
     }

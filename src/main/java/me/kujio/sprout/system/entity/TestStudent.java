@@ -12,17 +12,22 @@ import java.time.LocalTime;
  * 测试学生
  */
 @Data
-@Table("test_student")
+@Table
+
 public class TestStudent {
     private Integer id;
     private String name;
     private String avatar;
     private Integer age;
-    private Integer sex;
+    private Long timestamp;
     private Boolean stay;
     private BigDecimal score;
     private LocalDate birthday;
     private LocalTime schoolDismissalTime;
     private LocalDateTime registrationTime;
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }
