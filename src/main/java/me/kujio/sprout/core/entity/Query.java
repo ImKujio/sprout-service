@@ -85,7 +85,7 @@ public class Query {
             String value = params.getOrDefault("where[" + field + "][value]", new String[]{null})[0];
             if (type == null || type.isBlank() || value == null || value.isBlank()) continue;
             String[] values = value.split(Where.SEPARATOR);
-            Where where = Where.formParmas(field, type, (Object) values);
+            Where where = Where.formParams(field, type,  List.of(values));
             if (where != null) query.add(where);
         }
 

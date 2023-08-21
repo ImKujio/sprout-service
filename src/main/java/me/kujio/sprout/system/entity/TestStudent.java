@@ -19,7 +19,7 @@ public class TestStudent {
     private String name;
     private String avatar;
     private Integer age;
-    private Long timestamp;
+    private Integer sex;
     private Boolean stay;
     private BigDecimal score;
     private LocalDate birthday;

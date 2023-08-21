@@ -1,7 +1,10 @@
 package me.kujio.sprout;
 
+import me.kujio.sprout.core.entity.Query;
+import me.kujio.sprout.core.entity.Where;
 import me.kujio.sprout.system.entity.SysDict;
 import me.kujio.sprout.system.entity.SysDictItem;
+import me.kujio.sprout.system.service.SysDictItemService;
 import me.kujio.sprout.system.service.SysDictService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,13 @@ import java.util.List;
 public class SysDictServiceTests {
     @Autowired
     private SysDictService sysDictService;
+    @Autowired
+    private SysDictItemService sysDictItemService;
+
+    @Test
+    void testList(){
+        sysDictItemService.list(List.of(Where.equal("dict","6")));
+    }
 
     @Test
     void testDict() {

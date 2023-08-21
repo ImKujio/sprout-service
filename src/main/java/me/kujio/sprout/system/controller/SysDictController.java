@@ -55,11 +55,11 @@ public class SysDictController {
         return OK();
     }
 
-    public record WithItems(SysDict sysDict,List<SysDictItem> items){}
+    public record WithItems(SysDict data,List<SysDictItem> items){}
 
     @PutMapping("/with-items")
     public JRst putWithItems(@RequestBody WithItems withItems) {
-        sysDictService.putWithItems(withItems.sysDict,withItems.items);
+        sysDictService.putWithItems(withItems.data,withItems.items);
         return OK();
     }
 

@@ -5,6 +5,7 @@ import lombok.NonNull;
 import me.kujio.sprout.core.exception.SysException;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -60,21 +61,21 @@ public final class Where {
     }
 
 
-    public static Where formParmas(String field, String type, Object... values) {
+    public static Where formParams(String field, String type, List<Object> values) {
         if (field == null || field.isBlank()) return null;
-        if (type == null || type.isBlank() || TYPES.contains(type.toUpperCase())) return null;
-        if (values == null || values.length == 0) return null;
+        if (type == null || type.isBlank() || !TYPES.contains(type.toUpperCase())) return null;
+        if (values == null || values.size() == 0) return null;
         type = type.toUpperCase();
         switch (type) {
             case "=", "<", "<=", ">", ">=", "LIKE" -> {
-                Object value = values[0];
+                Object value = values.get(0);
                 if (value.equals("") || value.equals("null") || value.equals("undefined")) return null;
                 if (value.equals("true")) value = true;
                 if (value.equals("false")) value = false;
                 return new Where(true, field, type, value);
             }
             case "BETWEEN", "IN" -> {
-                if (values.length < 2) return null;
+                if (values.size() < 2) return null;
                 Set<Object> vals = new HashSet<>();
                 for (Object value : values) {
                     if (value.equals("") || value.equals("null") || value.equals("undefined")) continue;
