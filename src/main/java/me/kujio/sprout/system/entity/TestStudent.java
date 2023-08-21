@@ -15,6 +15,7 @@ import java.time.LocalTime;
 @Table
 
 public class TestStudent {
+    /** 编号 */
     private Integer id;
     private String name;
     private String avatar;

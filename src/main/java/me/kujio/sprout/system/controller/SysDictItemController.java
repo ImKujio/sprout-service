@@ -1,23 +1,31 @@
 package me.kujio.sprout.system.controller;
 
+import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.entity.JRst;
 import me.kujio.sprout.core.entity.Query;
+import me.kujio.sprout.core.service.AuthorityService;
 import me.kujio.sprout.system.entity.SysDictItem;
 import me.kujio.sprout.system.service.SysDictItemService;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/sys-dict-item")
 public class SysDictItemController {
 
+    private final AuthorityService authorityService;
     private final SysDictItemService sysDictItemService;
 
-    public SysDictItemController(SysDictItemService sysDictItemService) {
-        this.sysDictItemService = sysDictItemService;
+    @PostConstruct
+    public void registerAuthority() {
+        authorityService.register(new AuthorityService.Register() {{
+
+        }});
     }
 
     @GetMapping("/list")

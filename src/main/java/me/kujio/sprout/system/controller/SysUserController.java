@@ -1,25 +1,33 @@
 package me.kujio.sprout.system.controller;
 
+import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.entity.JRst;
 import me.kujio.sprout.core.entity.Query;
+import me.kujio.sprout.core.service.AuthorityService;
 import me.kujio.sprout.system.entity.SysUser;
 import me.kujio.sprout.system.service.SysUserService;
 import me.kujio.sprout.utils.FileUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/sys-user")
 public class SysUserController {
 
+    private final AuthorityService authorityService;
     private final SysUserService sysUserService;
 
-    public SysUserController(SysUserService sysUserService) {
-        this.sysUserService = sysUserService;
+    @PostConstruct
+    public void registerAuthority() {
+        authorityService.register(new AuthorityService.Register() {{
+
+        }});
     }
 
     @GetMapping("/list")

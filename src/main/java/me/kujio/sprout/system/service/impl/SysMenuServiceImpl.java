@@ -1,5 +1,6 @@
 package me.kujio.sprout.system.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.entity.Query;
 import me.kujio.sprout.core.service.TableServiceImpl;
 import me.kujio.sprout.system.entity.SysMenu;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SysMenuServiceImpl extends TableServiceImpl<SysMenu> implements SysMenuService {
 
 

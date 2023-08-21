@@ -1,6 +1,7 @@
 package me.kujio.sprout.system.service.impl;
 
 import cn.hutool.crypto.SecureUtil;
+import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.entity.AuthInfo;
 import me.kujio.sprout.core.exception.SysException;
 import me.kujio.sprout.core.service.AuthInfoService;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class SysUserServiceImpl extends TableServiceImpl<SysUser> implements SysUserService, AuthInfoService {
 
     @Override

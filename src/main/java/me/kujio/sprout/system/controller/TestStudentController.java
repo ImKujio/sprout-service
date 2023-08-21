@@ -1,25 +1,33 @@
 package me.kujio.sprout.system.controller;
 
+import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.entity.JRst;
 import me.kujio.sprout.core.entity.Query;
+import me.kujio.sprout.core.service.AuthorityService;
 import me.kujio.sprout.system.entity.TestStudent;
 import me.kujio.sprout.system.service.TestStudentService;
 import me.kujio.sprout.utils.FileUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static me.kujio.sprout.core.entity.JRst.OK;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/test-student")
 public class TestStudentController {
 
+    private final AuthorityService authorityService;
     private final TestStudentService testStudentService;
 
-    public TestStudentController(TestStudentService testStudentService) {
-        this.testStudentService = testStudentService;
+    @PostConstruct
+    public void registerAuthority() {
+        authorityService.register(new AuthorityService.Register() {{
+
+        }});
     }
 
     @GetMapping("/list")

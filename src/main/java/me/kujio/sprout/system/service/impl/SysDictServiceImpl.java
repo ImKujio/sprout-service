@@ -1,5 +1,6 @@
 package me.kujio.sprout.system.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import me.kujio.sprout.core.entity.Query;
 import me.kujio.sprout.core.service.TableServiceImpl;
 import me.kujio.sprout.system.entity.SysDict;
@@ -14,15 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class SysDictServiceImpl extends TableServiceImpl<SysDict> implements SysDictService {
 
     private final SysDictItemService sysDictItemService;
-
-    public SysDictServiceImpl(
-            SysDictItemService sysDictItemService
-    ) {
-        this.sysDictItemService = sysDictItemService;
-    }
 
     @Override
     public Map<String, Map<Integer, SysDictItem>> allDict() {

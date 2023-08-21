@@ -117,8 +117,11 @@ public final class Where {
         StringBuilder sb = new StringBuilder(table);
         sb.append(".`").append(field).append("` ").append(type).append(" ");
         switch (type) {
-            case "=", "<", "<=", ">", ">=", "LIKE" -> {
+            case "=", "<", "<=", ">", ">=" -> {
                 sb.append("#{query.wheres[").append(index).append("].values[0]}");
+            }
+            case "LIKE" -> {
+                sb.append("CONCAT('%',#{query.wheres[").append(index).append("].values[0]},'%')");
             }
             case "BETWEEN", "IN" -> {
                 sb.append("(");
